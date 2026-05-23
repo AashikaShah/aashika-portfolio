@@ -50,7 +50,7 @@ export default function CustomCursor() {
           opacity: isHovering ? 0.3 : 1,
         }}
         transition={{ type: "spring", stiffness: 800, damping: 35 }}
-        style={{ backgroundColor: "#9B1B30" }}
+        style={{ backgroundColor: "#C4475B" }}
       />
 
       {/* Trailing ring — lags behind slightly for depth */}
@@ -63,7 +63,7 @@ export default function CustomCursor() {
           height: 32,
         }}
         transition={{ type: "spring", stiffness: 200, damping: 25 }}
-        style={{ borderColor: "#9B1B30", opacity: 0.25 }}
+        style={{ borderColor: "#C4475B", opacity: 0.25 }}
       />
     </>
   );

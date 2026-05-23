@@ -24,7 +24,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
-      <body style={{ cursor: "none" }}>   {/* hides default cursor */}
+      <body style={{ cursor: "none", backgroundColor: "#0C0A0B"}}>   {/* hides default cursor */}
         <CustomCursor />                   {/* our crimson cursor lives here */}
         <Navbar />  
         {children}

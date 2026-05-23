@@ -1,27 +1,26 @@
 @import "tailwindcss";
 
-/* ── YOUR DESIGN SYSTEM ──────────────────────────────────── */
-
 @theme {
-  /* 🎨 Your Brand Colors — Updated Palette */
-  --color-background:  #F9F6F2;   /* warm off-white, premium feel */
-  --color-text:        #1A1A1A;   /* near-black, easy on eyes */
-  --color-primary:     #9B1B30;   /* deep crimson — your signature */
-  --color-secondary:   #C4475B;   /* rose-crimson — hover states */
-  --color-muted:       #6B6B6B;   /* captions, labels, supporting text */
+  --color-background:  #0C0A0B;
+  --color-text:        #F9F6F2;
+  --color-primary:     #C4475B;
+  --color-secondary:   #9B1B30;
+  --color-accent:      #C9A055;
+  --color-muted:       #8A8A8A;
 
-  /* ✍️ Your Fonts */
   --font-display: var(--font-cormorant), Georgia, serif;
   --font-body:    var(--font-inter), system-ui, sans-serif;
 }
 
-/* ── BASE STYLES ─────────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  background-color: #F9F6F2;
-  color: #1A1A1A;
+  background-color: #0C0A0B;
+  color: #F9F6F2;
   -webkit-font-smoothing: antialiased;
 }
+
+/* Hide scrollbar but keep scroll */
+::-webkit-scrollbar { width: 0px; }
