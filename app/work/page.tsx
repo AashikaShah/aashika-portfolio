@@ -1,372 +1,389 @@
+
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
 import Link from "next/link";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import React, { useRef } from "react";
 
-// ══════════════════════════════════════════════════════════
-// WORK DATA — add new items here to update the page
-// ══════════════════════════════════════════════════════════
-const workItems = [
-  {
-    id:          "research",
-    number:      "01",
-    title:       "Research",
-    oneliner:    "I study how living things sense the world.",
-    reveal:      "Melcher Lab · Swensen Lab · Woods Lab (Summer 2026) · Gondek Lab (Fall 2026)",
-    href:        "/work/research",
-    image:       null as string | null,
-    placeholder: "linear-gradient(135deg, #0D2B2B 0%, #1A5A5A 100%)",
-  },
-  {
-    id:          "bold",
-    number:      "02",
-    title:       "BOLD Leadership",
-    oneliner:    "I learned that leadership starts with listening.",
-    reveal:      "BOLD Women's Leadership Scholar · Ithaca College",
-    href:        "/work/bold",
-    image:       null as string | null,
-    placeholder: "linear-gradient(135deg, #2D1B1B 0%, #9B1B30 100%)",
-  },
-  {
-    id:          "edtech",
-    number:      "03",
-    title:       "Ed Tech & Learning Design",
-    oneliner:    "I build things that make learning feel human.",
-    reveal:      "AI Agents · Course Design · Media Production · Instructional Design",
-    href:        "/work/edtech",
-    image:       null as string | null,
-    placeholder: "linear-gradient(135deg, #1A1208 0%, #C9A055 100%)",
-  },
-  {
-    id:          "campus",
-    number:      "04",
-    title:       "Campus Life",
-    oneliner:    "I show up. Every single day.",
-    reveal:      "Animal Care Technician · Fitness Monitor · Mail Services",
-    href:        "/work/campus",
-    image:       null as string | null,
-    placeholder: "linear-gradient(135deg, #1E1410 0%, #8B5E3C 100%)",
-  },
-];
-
-type WorkItem = typeof workItems[0];
-
-// ══════════════════════════════════════════════════════════
-// FLOATING IMAGE COMPONENT
-// ══════════════════════════════════════════════════════════
-function FloatingImage({ activeItem }: { activeItem: WorkItem | null }) {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const x = useSpring(mouseX, { stiffness: 120, damping: 20 });
-  const y = useSpring(mouseY, { stiffness: 120, damping: 20 });
-  const rotate = useSpring(0, { stiffness: 80, damping: 15 });
-
-  useEffect(() => {
-    let lastX = 0;
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-      const dx = e.clientX - lastX;
-      rotate.set(dx * 0.15);
-      lastX = e.clientX;
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY, rotate]);
-
+// ── puṣpa — Flower (Research / plant biology)
+function MascotFlower({ color }: { color: string }) {
   return (
-    <motion.div
-      style={{
-        x,
-        y,
-        rotate,
-        translateX: "20px",
-        translateY: "-60%",
-      }}
-      className="fixed top-0 left-0 pointer-events-none z-[200]"
-      animate={{
-        opacity: activeItem ? 1 : 0,
-        scale:   activeItem ? 1 : 0.85,
-      }}
-      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <div
-        className="rounded-xl overflow-hidden"
-        style={{
-          width:      220,
-          height:     280,
-          background: activeItem?.image
-            ? `url(${activeItem.image}) center/cover`
-            : activeItem?.placeholder ?? "transparent",
-          boxShadow: "0 25px 60px rgba(0,0,0,0.6)",
-        }}
-      >
-        {!activeItem?.image && activeItem && (
-          <div
-            className="w-full h-full flex flex-col
-                       items-center justify-center"
-            style={{ backgroundColor: "rgba(0,0,0,0.25)" }}
-          >
-            <p style={{
-              fontFamily: "var(--font-cormorant), Georgia, serif",
-              fontSize: "1.2rem", fontWeight: 300,
-              color: "rgba(249,246,242,0.7)",
-              fontStyle: "italic", textAlign: "center",
-              padding: "0 1rem",
-            }}>
-              {activeItem.title}
-            </p>
-            <p style={{
-              fontFamily: "var(--font-inter), sans-serif",
-              fontSize: "0.55rem",
-              color: "rgba(249,246,242,0.35)",
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-              marginTop: "0.5rem",
-            }}>
-              Photo coming soon
-            </p>
-          </div>
-        )}
-      </div>
-    </motion.div>
+    <svg width="130" height="130" viewBox="0 0 130 130" fill="none" aria-hidden>
+      {[0, 60, 120, 180, 240, 300].map((angle) => (
+        <ellipse
+          key={angle}
+          cx="65" cy="65" rx="13" ry="30"
+          fill={color}
+          transform={`rotate(${angle} 65 65)`}
+          opacity="0.92"
+        />
+      ))}
+      <circle cx="65" cy="65" r="16" fill={color} />
+      <circle cx="65" cy="65" r="7"  fill="rgba(0,0,0,0.22)" />
+    </svg>
   );
 }
 
-// ══════════════════════════════════════════════════════════
-// WORK ROW COMPONENT
-// ══════════════════════════════════════════════════════════
-function WorkRow({
-  item,
-  index,
-  isActive,
-  isAnyActive,
-  onEnter,
-  onLeave,
-}: {
-  item:        WorkItem;
-  index:       number;
-  isActive:    boolean;
-  isAnyActive: boolean;
-  onEnter:     () => void;
-  onLeave:     () => void;
-}) {
+// ── dhvaja — Flag (Leadership / BOLD)
+function MascotFlag({ color }: { color: string }) {
   return (
-    <Link href={item.href} style={{ textDecoration: "none" }}>
+    <svg width="130" height="130" viewBox="0 0 130 130" fill="none" aria-hidden>
+      <rect x="42" y="18" width="8" height="96" rx="4" fill={color} />
+      <path d="M50 22 L108 38 L50 58 Z" fill={color} />
+      <path d="M50 26 L96 40 L50 52 Z"  fill="rgba(255,255,255,0.1)" />
+      <rect x="30" y="110" width="32" height="8" rx="4" fill={color} />
+    </svg>
+  );
+}
+
+// ── daraṁ — Conch (Ed Tech / call to learn)
+function MascotConch({ color }: { color: string }) {
+  return (
+    <svg width="130" height="130" viewBox="0 0 130 130" fill="none" aria-hidden>
+      <path
+        d="M65 20 C90 20,112 40,110 65
+           C108 88,90 108,65 110
+           C45 110,25 95,22 75
+           C19 55,35 35,55 28
+           C58 22,62 20,65 20Z"
+        fill={color}
+      />
+      <path
+        d="M65 38 C82 38,92 52,90 66 C88 78,76 88,65 88"
+        stroke="rgba(0,0,0,0.2)" strokeWidth="5"
+        fill="none" strokeLinecap="round"
+      />
+      <path
+        d="M65 52 C74 52,78 60,76 68"
+        stroke="rgba(0,0,0,0.15)" strokeWidth="4"
+        fill="none" strokeLinecap="round"
+      />
+      <ellipse
+        cx="38" cy="42" rx="10" ry="6"
+        fill={color}
+        transform="rotate(-40 38 42)"
+      />
+    </svg>
+  );
+}
+
+// ── parvata — Mountain (Campus Life / Ithaca gorges)
+function MascotMountain({ color }: { color: string }) {
+  return (
+    <svg width="130" height="130" viewBox="0 0 130 130" fill="none" aria-hidden>
+      <path d="M72 32 L112 104 H32 Z"  fill={color} opacity="0.55" />
+      <path d="M48 18 L96 104 H0 Z"    fill={color} />
+      <path d="M48 18 L62 46 L34 46 Z" fill="rgba(255,255,255,0.22)" />
+      <rect x="0" y="104" width="130" height="8" rx="4" fill={color} opacity="0.6" />
+    </svg>
+  );
+}
+
+// ── types
+type CardDef = {
+  title:      string;
+  subtitle:   string;
+  
+  href:       string;
+  accent:     string;
+  bgA:        string;
+  bgB:        string;
+  Mascot:     React.FC<{ color: string }>;
+  floatDur:   number;
+  floatY:     number;
+  floatDelay: number;
+};
+
+// ── data
+const CARDS: CardDef[] = [
+  {
+    title:      "Research",
+    subtitle:   "Melcher Lab · Swensen Lab",
+    
+    href:       "/work/research",
+    accent:     "#53C8B4",
+    bgA:        "#0D2F2A",
+    bgB:        "#061A17",
+    Mascot:     MascotFlower,
+    floatDur:   6.2,
+    floatY:     8,
+    floatDelay: 0,
+  },
+  {
+    title:      "Leadership",
+    subtitle:   "BOLD · Ithaca College",
+    
+    href:       "/work/bold",
+    accent:     "#E85E7A",
+    bgA:        "#2E0D18",
+    bgB:        "#16060C",
+    Mascot:     MascotFlag,
+    floatDur:   7.1,
+    floatY:     6,
+    floatDelay: 0.6,
+  },
+  {
+    title:      "Ed Tech",
+    subtitle:   "Learning Design · AI Tools",
+    
+    href:       "/work/edtech",
+    accent:     "#F2C95E",
+    bgA:        "#2E220A",
+    bgB:        "#130E05",
+    Mascot:     MascotConch,
+    floatDur:   6.8,
+    floatY:     7,
+    floatDelay: 0.3,
+  },
+  {
+    title:      "Campus Life",
+    subtitle:   "Community · Belonging",
+    
+    href:       "/work/campus",
+    accent:     "#CF9F74",
+    bgA:        "#2A1C0E",
+    bgB:        "#110D07",
+    Mascot:     MascotMountain,
+    floatDur:   7.4,
+    floatY:     9,
+    floatDelay: 0.9,
+  },
+];
+
+// ── card component
+function WorkCard({ card, index }: { card: CardDef; index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+
+  const rotateX   = useSpring(useTransform(my, [-1, 1], [6,  -6]), { stiffness: 220, damping: 24 });
+  const rotateY   = useSpring(useTransform(mx, [-1, 1], [-6, 6]),  { stiffness: 220, damping: 24 });
+  const cardScale = useSpring(1, { stiffness: 260, damping: 24 });
+
+  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const r = ref.current?.getBoundingClientRect();
+    if (!r) return;
+    mx.set(((e.clientX - r.left) / r.width  - 0.5) * 2);
+    my.set(((e.clientY - r.top)  / r.height - 0.5) * 2);
+  };
+
+  return (
+    <Link href={card.href} style={{ display: "block", height: "100%" }}>
+      {/* float */}
       <motion.div
-        onMouseEnter={onEnter}
-        onMouseLeave={onLeave}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1,  y: 0  }}
-        transition={{ duration: 0.6, delay: 0.1 + index * 0.1 }}
-        className="relative px-8 md:px-20 py-10 md:py-14
-                   flex items-center justify-between gap-8"
-        style={{
-          borderBottom:  "1px solid rgba(249,246,242,0.08)",
-          cursor:        "none",
-          opacity:        isAnyActive && !isActive ? 0.3 : 1,
-          transition:    "opacity 0.4s ease",
+        style={{ height: "100%" }}
+        animate={{ y: [0, -card.floatY, 0] }}
+        transition={{
+          duration:  card.floatDur,
+          repeat:    Infinity,
+          ease:      "easeInOut",
+          delay:     card.floatDelay,
         }}
       >
-
-        {/* Left side — number + text */}
-        <div className="flex items-start gap-6 md:gap-10 flex-1">
-
-          {/* Number */}
-          <span style={{
-            fontFamily:    "var(--font-inter), system-ui, sans-serif",
-            fontSize:      "0.58rem",
-            letterSpacing: "0.3em",
-            color:          isActive
-              ? "#C4475B"
-              : "rgba(249,246,242,0.2)",
-            paddingTop:    "0.6rem",
-            transition:    "color 0.3s ease",
-            flexShrink:    0,
-            width:         "2rem",
-          }}>
-            {item.number}
-          </span>
-
-          {/* Text */}
-          <div>
-
-            {/* Category label */}
-            <p style={{
-              fontFamily:    "var(--font-inter), system-ui, sans-serif",
-              fontSize:      "0.58rem",
-              letterSpacing: "0.25em",
-              textTransform: "uppercase",
-              color:          isActive
-                ? "#C4475B"
-                : "rgba(249,246,242,0.28)",
-              marginBottom:  "0.6rem",
-              transition:    "color 0.3s ease",
-            }}>
-              {item.title}
-            </p>
-
-            {/* One-liner */}
-            <p style={{
-              fontFamily:    "var(--font-cormorant), Georgia, serif",
-              fontSize:      "clamp(1.8rem, 3.5vw, 3rem)",
-              fontWeight:    300,
-              fontStyle:     "italic",
-              color:         "#F9F6F2",
-              lineHeight:    1.2,
-              letterSpacing: "-0.01em",
-            }}>
-              {item.oneliner}
-            </p>
-
-            {/* Reveal detail */}
-            <p style={{
-              fontFamily:    "var(--font-inter), system-ui, sans-serif",
-              fontSize:      "0.68rem",
-              letterSpacing: "0.08em",
-              color:          isActive
-                ? "rgba(249,246,242,0.6)"
-                : "rgba(249,246,242,0.22)",
-              marginTop:     "0.85rem",
-              lineHeight:    1.7,
-              transition:    "color 0.4s ease",
-            }}>
-              {item.reveal}
-            </p>
-
-          </div>
-        </div>
-
-        {/* Right side — explore arrow */}
-        <motion.span
-          animate={{
-            opacity: isActive ? 1   : 0,
-            x:       isActive ? 0   : -12,
-          }}
-          transition={{ duration: 0.25, ease: "easeOut" }}
+        {/* tilt */}
+        <motion.div
+          ref={ref}
+          onMouseMove={onMove}
+          onMouseEnter={() => cardScale.set(1.03)}
+          onMouseLeave={() => { mx.set(0); my.set(0); cardScale.set(1); }}
           style={{
-            fontFamily:    "var(--font-inter), system-ui, sans-serif",
-            fontSize:      "0.65rem",
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            color:         "#C4475B",
-            flexShrink:    0,
+            rotateX,
+            rotateY,
+            scale:          cardScale,
+            transformStyle: "preserve-3d",
+            perspective:    900,
+            height:         "100%",
+            cursor:         "pointer",
+          }}
+          initial={{ opacity: 0, y: 22 }}
+          animate={{ opacity: 1, y: 0  }}
+          transition={{
+            duration: 0.9,
+            ease:     [0.22, 1, 0.36, 1],
+            delay:    0.07 * index,
           }}
         >
-          Explore →
-        </motion.span>
+          <div
+            className="relative h-full w-full overflow-hidden"
+            style={{
+              borderRadius: 20,
+              border:       `1px solid ${card.accent}35`,
+              background:   `
+                radial-gradient(ellipse at 15% 20%, ${card.accent}22 0%, transparent 60%),
+                linear-gradient(145deg, ${card.bgA} 0%, ${card.bgB} 100%)
+              `,
+            }}
+          >
+            {/* scanline grain */}
+            <div
+              aria-hidden
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                backgroundImage:
+                  "repeating-linear-gradient(0deg,rgba(255,255,255,0.025) 0px,rgba(255,255,255,0.025) 1px,transparent 1px,transparent 6px)",
+                mixBlendMode: "overlay",
+              }}
+            />
 
+            {/* bottom glow */}
+            <div
+              aria-hidden
+              className="absolute pointer-events-none"
+              style={{
+                width:      "55%",
+                height:     "55%",
+                right:      "-10%",
+                bottom:     "-10%",
+                background: `radial-gradient(ellipse at center,${card.accent}28 0%,transparent 70%)`,
+              }}
+            />
+
+            {/* content */}
+            <div className="relative z-10 h-full flex flex-col justify-between p-8 md:p-10">
+
+              {/* text */}
+              <div>
+                <h2 style={{
+                  fontFamily:    "var(--font-cormorant),Georgia,serif",
+                  fontSize:      "clamp(1.65rem,2.4vw,2.8rem)",
+                  fontWeight:    300,
+                  color:         "#F6F1EA",
+                  letterSpacing: "-0.01em",
+                  lineHeight:    1.0,
+                  marginBottom:  "0.4rem",
+                }}>
+                  {card.title}
+                </h2>
+
+                <p style={{
+                  fontFamily:    "var(--font-inter),system-ui,sans-serif",
+                  fontSize:      "0.58rem",
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  color:         card.accent,
+                  opacity:       0.65,
+                }}>
+                  {card.subtitle}
+                </p>
+
+                <div style={{
+                  width:           38,
+                  height:          1,
+                  backgroundColor: card.accent,
+                  opacity:         0.5,
+                  marginTop:       "0.85rem",
+                }} />
+
+                {/* Sanskrit name — tiny, italic, barely there */}
+                <p style={{
+                  fontFamily:    "var(--font-cormorant),Georgia,serif",
+                  fontSize:      "0.72rem",
+                  fontStyle:     "italic",
+                  color:         card.accent,
+                  opacity:       0.4,
+                  marginTop:     "0.5rem",
+                  letterSpacing: "0.05em",
+                }}>
+                  {card.symbol}
+                </p>
+              </div>
+
+              {/* mascot */}
+              <motion.div
+                aria-hidden
+                animate={{
+                  y:      [0, -(card.floatY * 0.7), 0],
+                  rotate: [0, 1.5, -1.5, 0],
+                }}
+                transition={{
+                  duration: card.floatDur * 0.85,
+                  repeat:   Infinity,
+                  ease:     "easeInOut",
+                  delay:    card.floatDelay,
+                }}
+                style={{
+                  position: "absolute",
+                  right:    "8%",
+                  top:      "16%",
+                  opacity:  0.78,
+                }}
+              >
+                <card.Mascot color={card.accent} />
+              </motion.div>
+
+              {/* CTA */}
+              <span style={{
+                fontFamily:    "var(--font-inter),system-ui,sans-serif",
+                fontSize:      "0.6rem",
+                letterSpacing: "0.26em",
+                textTransform: "uppercase",
+                color:         card.accent,
+                opacity:       0.9,
+              }}>
+                Explore →
+              </span>
+
+            </div>
+          </div>
+        </motion.div>
       </motion.div>
     </Link>
   );
 }
 
-// ══════════════════════════════════════════════════════════
-// MAIN PAGE
-// ══════════════════════════════════════════════════════════
+// ── page
 export default function WorkPage() {
-  const [activeItem, setActiveItem] = useState<WorkItem | null>(null);
-
   return (
-    <main style={{ backgroundColor: "#0C0A0B", cursor: "none" }}>
-
-      {/* Floating image — follows cursor */}
-      <FloatingImage activeItem={activeItem} />
-
-      {/* ── PAGE HEADER ───────────────────────────── */}
-      <section className="pt-36 pb-20 px-8 md:px-20">
-
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1,  y: 0  }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          style={{
-            fontFamily:    "var(--font-inter), system-ui, sans-serif",
-            fontSize:      "0.62rem",
-            letterSpacing: "0.45em",
-            textTransform: "uppercase",
-            color:         "#C4475B",
-            marginBottom:  "1.2rem",
-          }}
-        >
-          Portfolio
-        </motion.p>
-
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1,  y: 0  }}
-          transition={{
-            duration: 1,
-            ease: [0.22, 1, 0.36, 1],
-            delay: 0.3,
-          }}
-          style={{
-            fontFamily:    "var(--font-cormorant), Georgia, serif",
-            fontSize:      "clamp(3.5rem, 9vw, 8rem)",
-            fontWeight:    300,
-            color:         "#F9F6F2",
-            letterSpacing: "-0.02em",
-            lineHeight:    1,
-          }}
-        >
-          My Work
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.9 }}
-          style={{
-            fontFamily: "var(--font-cormorant), Georgia, serif",
-            fontSize:   "1rem",
-            fontStyle:  "italic",
-            color:      "rgba(249,246,242,0.22)",
-            marginTop:  "1.5rem",
-          }}
-        >
-          Hover to explore. Click to go deeper.
-        </motion.p>
-
-      </section>
-
-      {/* ── WORK LIST ─────────────────────────────── */}
-      <section
-        style={{ borderTop: "1px solid rgba(249,246,242,0.08)" }}
+    <main className="min-h-screen" style={{ backgroundColor: "#070707" }}>
+      <div
+        className="max-w-[1220px] mx-auto"
+        style={{ padding: "7rem 2rem 4rem" }}
       >
-        {workItems.map((item, i) => (
-          <WorkRow
-            key={item.id}
-            item={item}
-            index={i}
-            isActive={activeItem?.id === item.id}
-            isAnyActive={activeItem !== null}
-            onEnter={() => setActiveItem(item)}
-            onLeave={() => setActiveItem(null)}
-          />
-        ))}
-      </section>
+        <div style={{ marginBottom: "2.4rem" }}>
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            style={{
+              fontFamily:    "var(--font-inter),system-ui,sans-serif",
+              fontSize:      "0.55rem",
+              letterSpacing: "0.5em",
+              textTransform: "uppercase",
+              color:         "#C4475B",
+              marginBottom:  "0.7rem",
+            }}
+          >
+            Portfolio
+          </motion.p>
 
-      {/* ── FOOTER NOTE ───────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
-        className="px-8 md:px-20 py-16"
-        style={{ borderTop: "1px solid rgba(249,246,242,0.05)" }}
-      >
-        <p style={{
-          fontFamily: "var(--font-cormorant), Georgia, serif",
-          fontSize:   "0.95rem",
-          fontStyle:  "italic",
-          color:      "rgba(249,246,242,0.15)",
-        }}>
-          More coming — Woods Lab (Summer 2026) ·
-          Gondek Lab (Fall 2026)
-        </p>
-      </motion.div>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+            style={{
+              fontFamily:    "var(--font-cormorant),Georgia,serif",
+              fontSize:      "clamp(2.6rem,5.5vw,5.2rem)",
+              fontWeight:    300,
+              color:         "#F6F1EA",
+              letterSpacing: "-0.02em",
+              lineHeight:    1,
+            }}
+          >
+            My Work
+          </motion.h1>
+        </div>
 
+        <div
+          className="grid grid-cols-1 md:grid-cols-2"
+          style={{ gap: 14, minHeight: "65vh" }}
+        >
+          {CARDS.map((card, i) => (
+            <WorkCard key={card.title} card={card} index={i} />
+          ))}
+        </div>
+
+      </div>
     </main>
   );
 }

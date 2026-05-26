@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
+import { Cormorant_Garamond, Inter } from "next/font/google";
 import CustomCursor from "./components/CustomCursor";
-import Navbar from "./components/Navbar"; 
+import Navbar from "./components/Navbar";
+import FloatingContact from "./components/FloatingContact";
+
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
@@ -14,23 +15,19 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-export const metadata: Metadata = {
-  title: "Aashika Shah — Biologist & Researcher",
-  description: "Undergraduate biologist, researcher, and leader at Ithaca College.",
-};
-
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
-      <body style={{ cursor: "none", backgroundColor: "#0C0A0B"}}>   {/* hides default cursor */}
-        <CustomCursor />                   {/* our crimson cursor lives here */}
-        <Navbar />  
+      <body>
+        <CustomCursor />
+        <Navbar />
+        <FloatingContact />
         {children}
       </body>
     </html>
   );
 }
-
-
