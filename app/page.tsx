@@ -26,10 +26,10 @@ export default function Home() {
           transition={{ duration: 1, delay: 0.5 }}
           style={{
             fontFamily: "var(--font-inter), system-ui, sans-serif",
-            fontSize: "0.6rem",
+            fontSize: "0.8rem",
             letterSpacing: "0.5em",
             textTransform: "uppercase",
-            color: "#C4475B",
+            color: "#a1a39a",
             marginBottom: "2.5rem",
           }}
         >

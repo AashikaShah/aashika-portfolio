@@ -12,12 +12,20 @@ const navLinks = [
   { label: "Story",    href: "/story"    },
 ];
 
+// ── Add any light-background pages here ──────────────────
+const lightPages = ["/academic", "/work/campus"];
+
 export default function Navbar() {
   const [scrolled,    setScrolled]    = useState(false);
   const [hidden,      setHidden]      = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [menuOpen,    setMenuOpen]    = useState(false);
   const pathname = usePathname();
+
+  // true = we're on a light page AND haven't scrolled yet
+  // (once scrolled, the dark backdrop kicks in so white text is fine again)
+  const isLightPage  = lightPages.includes(pathname);
+  const useDarkText  = isLightPage && !scrolled;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,25 +54,28 @@ export default function Navbar() {
           transition: "background-color 0.4s ease",
         }}
       >
-        {/* Monogram */}
+        {/* Monogram — dark on light pages, light on dark pages */}
         <Link href="/" style={{
-          fontFamily: "var(--font-cormorant), Georgia, serif",
-          fontSize: "1.5rem", fontWeight: 300,
-          color: "#1A1A1A", textDecoration: "none",
-          letterSpacing: "0.05em",
+          fontFamily:     "var(--font-cormorant), Georgia, serif",
+          fontSize:       "1.5rem",
+          fontWeight:     300,
+          color:          useDarkText ? "#2A2218" : "#F9F6F2",
+          textDecoration: "none",
+          letterSpacing:  "0.05em",
+          transition:     "color 0.3s ease",
         }}>
-          AS<span style={{ color: "#9B1B30" }}>.</span>
+          AS<span style={{ color: useDarkText ? "#B85C45" : "#9B1B30" }}>.</span>
         </Link>
 
         {/* Desktop links */}
-        <ul className="hidden md:flex items-center gap-10
-                        list-none m-0 p-0">
+        <ul className="hidden md:flex items-center gap-10 list-none m-0 p-0">
           {navLinks.map((link) => (
             <li key={link.label}>
               <NavLink
                 label={link.label}
                 href={link.href}
                 active={pathname === link.href}
+                useDarkText={useDarkText}
               />
             </li>
           ))}
@@ -72,14 +83,17 @@ export default function Navbar() {
           {/* Mail icon */}
           <li>
             <a
-              href="mailto:ashah2@ithaca.edu"
+              href="mailto:ashah2@ithaca.edu, aashikashah7@gmail.com"
               style={{
-                color: "#9B1B30", fontSize: "1rem",
-                textDecoration: "none", cursor: "none",
+                color:          useDarkText ? "#B85C45" : "#9B1B30",
+                fontSize:       "1rem",
+                textDecoration: "none",
+                cursor:         "none",
+                transition:     "color 0.3s ease",
               }}
               title="Say hello"
             >
-              ✉
+                ✉
             </a>
           </li>
         </ul>
@@ -94,7 +108,10 @@ export default function Navbar() {
             <motion.span
               key={i}
               className="block h-px w-6"
-              style={{ backgroundColor: "#1A1A1A" }}
+              style={{
+                backgroundColor: useDarkText ? "#2A2218" : "#F9F6F2",
+                transition: "background-color 0.3s ease",
+              }}
               animate={{
                 opacity: menuOpen && i === 1 ? 0 : 1,
                 rotate:  menuOpen ? (i === 0 ? 45 : i === 2 ? -45 : 0) : 0,
@@ -106,7 +123,7 @@ export default function Navbar() {
         </button>
       </motion.nav>
 
-      {/* Mobile menu */}
+      {/* Mobile menu — fixed invisible text bug (was #F9F6F2 on #F9F6F2) */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -116,10 +133,9 @@ export default function Navbar() {
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="fixed inset-0 z-[99] flex flex-col
                        items-center justify-center md:hidden"
-            style={{ backgroundColor: "#F9F6F2" }}
+            style={{ backgroundColor: "#1A1010" }}  // dark bg so text is always visible
           >
-            <ul className="flex flex-col items-center
-                            gap-10 list-none p-0">
+            <ul className="flex flex-col items-center gap-10 list-none p-0">
               {navLinks.map((link, i) => (
                 <motion.li
                   key={link.label}
@@ -131,10 +147,11 @@ export default function Navbar() {
                     href={link.href}
                     onClick={() => setMenuOpen(false)}
                     style={{
-                      fontFamily:
-                        "var(--font-cormorant), Georgia, serif",
-                      fontSize: "2.8rem", fontWeight: 300,
-                      color: "#F9F6F2", textDecoration: "none",
+                      fontFamily:     "var(--font-cormorant), Georgia, serif",
+                      fontSize:       "2.8rem",
+                      fontWeight:     300,
+                      color:          pathname === link.href ? "#B85C45" : "#F9F6F2",
+                      textDecoration: "none",
                     }}
                   >
                     {link.label}
@@ -151,11 +168,18 @@ export default function Navbar() {
 
 // ── Individual nav link ───────────────────────────────────
 function NavLink({
-  href, label, active,
+  href, label, active, useDarkText,
 }: {
-  href: string; label: string; active: boolean;
+  href: string; label: string; active: boolean; useDarkText: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
+
+  // Color logic:
+  // Light page (not scrolled) → dark brown inactive, terracotta active
+  // Dark page or scrolled     → near-white inactive, crimson active
+  const inactiveColor = useDarkText ? "#2A2218"  : "#F9F6F2";
+  const activeColor   = useDarkText ? "#B85C45"  : "#9B1B30";
+  const underlineColor = useDarkText ? "#B85C45" : "#9B1B30";
 
   return (
     <Link
@@ -164,17 +188,19 @@ function NavLink({
       onMouseLeave={() => setHovered(false)}
       className="relative pb-1"
       style={{
-        fontFamily: "var(--font-inter), system-ui, sans-serif",
-        fontSize: "0.7rem", letterSpacing: "0.15em",
-        textTransform: "uppercase",
-        color: active ? "#9B1B30" : "#F9F6F2",
+        fontFamily:     "var(--font-inter), system-ui, sans-serif",
+        fontSize:       "0.7rem",
+        letterSpacing:  "0.15em",
+        textTransform:  "uppercase",
+        color:          active ? activeColor : inactiveColor,
         textDecoration: "none",
+        transition:     "color 0.3s ease",
       }}
     >
       {label}
       <motion.span
         className="absolute bottom-0 left-0 h-px"
-        style={{ backgroundColor: "#9B1B30" }}
+        style={{ backgroundColor: underlineColor }}
         animate={{ width: (hovered || active) ? "100%" : "0%" }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
       />

@@ -8,8 +8,8 @@ const projects = [
   {
     lab:         "Melcher Lab",
     role:        "Student Researcher",
-    period:      "August 2025 – Present",
-    status:      "Active",
+    period:      "August 2025 – May 2026",
+    status:      "Completed",
     description: "Evaluating action potentials in plants in response to temperature and their correlation with gene expression.",
     highlights: [
       "Analyzed impact of freezing on moss species (Dicranum scoparium)",

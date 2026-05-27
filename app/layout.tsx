@@ -2,7 +2,8 @@ import "./globals.css";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import CustomCursor from "./components/CustomCursor";
 import Navbar from "./components/Navbar";
-import FloatingContact from "./components/FloatingContact";
+import ContactModal from "./components/ContactModal";
+
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -25,7 +26,7 @@ export default function RootLayout({
       <body>
         <CustomCursor />
         <Navbar />
-        <FloatingContact />
+        <ContactModal />
         {children}
       </body>
     </html>

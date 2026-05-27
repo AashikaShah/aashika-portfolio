@@ -9,10 +9,55 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 
 const LABS = [
   {
+    id:     "gondek",
+    lab:    "Gondek Lab",
+    pi:     "Prof. Dave Gondek",
+    period: "Fall 2026",
+    status: "upcoming",
+    accent: "#F2C95E",
+    bg:     "#1E1A08",
+    pageBg: "#121006",
+    focus: (
+      <>
+        Coming Fall 2026. Details will be added as the project begins.
+      </>
+    ),
+    details: [],
+    methods: "",
+    photos: [
+      { label: "Coming Fall 2026", h: 180, rotate: -1 },
+      { label: "Gondek Lab",       h: 160, rotate:  1 },
+      { label: "Placeholder",      h: 140, rotate: -1 },
+    ],
+  },
+  {
+    id:     "woods",
+    lab:    "Woods Lab",
+    pi:     "Prof. Ian Woods",
+    period: "Summer 2026",
+    status: "upcoming",
+    accent: "#C49A73",
+    bg:     "#181208",
+    pageBg: "#0F0C07",
+    focus: (
+      <>
+        Coming Summer 2026. Details will be added as the project begins.
+      </>
+    ),
+    details: [],
+    methods: "",
+    photos: [
+      { label: "Coming Summer 2026", h: 180, rotate:  1   },
+      { label: "Woods Lab",          h: 160, rotate: -1.5 },
+      { label: "Placeholder",        h: 140, rotate:  1   },
+    ],
+  },
+
+  {
     id:     "melcher",
     lab:    "Melcher Lab",
     pi:     "Prof. Peter Melcher",
-    period: "Aug 2025 – Present",
+    period: "Aug 2025 – May 2026",
     status: "completed",
     accent: "#53C8B4",
     bg:     "#0F2E28",
@@ -44,7 +89,7 @@ const LABS = [
   {
     id:     "swensen",
     lab:    "Swensen Lab",
-    pi:     "Swensen Lab, Ithaca College",
+    pi:     "Prof. Susan Swensen, Ithaca College",
     period: "Jan 2024 – May 2024",
     status: "completed",
     accent: "#E85E7A",
@@ -73,50 +118,7 @@ const LABS = [
       { label: "Samples",           h: 160, rotate:  1   },
     ],
   },
-  {
-    id:     "gondek",
-    lab:    "Gondek Lab",
-    pi:     "Prof. Dave Gondek",
-    period: "Fall 2026",
-    status: "upcoming",
-    accent: "#F2C95E",
-    bg:     "#1E1A08",
-    pageBg: "#121006",
-    focus: (
-      <>
-        Coming Fall 2026. Details will be added as the project begins.
-      </>
-    ),
-    details: [],
-    methods: "",
-    photos: [
-      { label: "Coming Fall 2026", h: 180, rotate: -1 },
-      { label: "Gondek Lab",       h: 160, rotate:  1 },
-      { label: "Placeholder",      h: 140, rotate: -1 },
-    ],
-  },
-  {
-    id:     "woods",
-    lab:    "Woods Lab",
-    pi:     "Woods Lab",
-    period: "Summer 2026",
-    status: "upcoming",
-    accent: "#C49A73",
-    bg:     "#181208",
-    pageBg: "#0F0C07",
-    focus: (
-      <>
-        Coming Summer 2026. Details will be added as the project begins.
-      </>
-    ),
-    details: [],
-    methods: "",
-    photos: [
-      { label: "Coming Summer 2026", h: 180, rotate:  1   },
-      { label: "Woods Lab",          h: 160, rotate: -1.5 },
-      { label: "Placeholder",        h: 140, rotate:  1   },
-    ],
-  },
+
 ];
 
 /* ══════════════════════════════════════════════════════════
@@ -420,7 +422,7 @@ export default function ResearchPage() {
             maxWidth:      "16ch",
             marginBottom:  "1.5rem",
           }}>
-            I study how living things sense the world.
+            Studying how living organisms sense the world.
           </h1>
           <p style={{
             fontFamily: "var(--font-cormorant), Georgia, serif",
@@ -429,8 +431,8 @@ export default function ResearchPage() {
             color:      "rgba(246,241,234,0.8)",
             maxWidth:   "52ch",
           }}>
-            From electrical signals in plants to gut microbiome dynamics —
-            I work across systems to understand how organisms respond to
+            From electrical signals in plants to gut microbiome dynamics:
+            I have worked across systems to understand how organisms respond to
             stress, change, and environment.
           </p>
         </motion.div>

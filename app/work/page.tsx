@@ -98,7 +98,7 @@ type CardDef = {
 const CARDS: CardDef[] = [
   {
     title:      "Research",
-    subtitle:   "Melcher Lab · Swensen Lab",
+    subtitle:   "Biology Department",
     
     href:       "/work/research",
     accent:     "#53C8B4",

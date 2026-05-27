@@ -50,7 +50,7 @@ const AI_PROJECTS = [
   {
     title:  "MTD Performance Evaluations GPT",
     org:    "School of Music, Theatre and Dance · Ithaca College",
-    desc:   "Built a custom AI agent to support performance evaluations for faculty and students. Streamlined a complex evaluation workflow into a guided AI-assisted process.",
+    desc:   "Built a custom AI agent to support performance evaluations of students for faculty with Claude Code. Streamlined a complex evaluation workflow into an efficient AI-assisted process.",
     photo:  "MTD GPT · screenshot",
     accent: TEAL,
   },
@@ -65,14 +65,14 @@ const AI_PROJECTS = [
 
 const COURSE_PROJECTS = [
   {
-    title:  "Radiation Safety Modules",
+    title:  "Radiation Safety",
     org:    "Chemistry Department · School of H&S",
     desc:   "Developed and deployed radiation safety training modules for the Chemistry Department. Aligned content with institutional lab safety standards and OSHA guidelines.",
     photo:  "Radiation safety · Canvas module",
     accent: ORANGE,
   },
   {
-    title:  "HAL Biosafety Course",
+    title:  "Human Anatomy Lab Biosafety Course",
     org:    "Physical Therapy Department · School of HSHP",
     desc:   "Co-developed a human anatomy lab biosafety course for Physician Assistant students. Collaborated with Environmental Health and Safety and the School of Health Sciences.",
     photo:  "HAL biosafety · course screenshot",
