@@ -1,303 +1,647 @@
 "use client";
-
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
-function FadeUp({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+/* ══════════════════════════════════════════════════════════
+   PHOTOS  ← the ONLY place you touch for the right column
+   ══════════════════════════════════════════════════════════
+   Each entry:
+     src?    – path relative to /public, e.g. "/images/edtech/desk.jpg"
+               Leave undefined to keep a placeholder slot.
+     alt     – screen-reader text
+     rotate  – tilt in degrees (optional, default 0)
+   ══════════════════════════════════════════════════════════ */
+const PHOTOS: { src?: string; alt: string; rotate?: number }[] = [
+  { alt: "Ed Tech workspace", rotate: -1.5 },
+  { alt: "Canvas course design", rotate: 1.2 },
+  { alt: "Instructional media editing", rotate: -0.8 },
+  { alt: "AI agent demo", rotate: 1.5 },
+  { alt: "Faculty collaboration", rotate: -1.0 },
+];
+
+/* ══════════════════════════════════════════════════════════
+   PROJECTS DATA
+   ══════════════════════════════════════════════════════════ */
+const PROJECTS = [
+  {
+    id: "lab-safety",
+    title: "Lab Safety Training Course",
+    org: "Various Departments · Ithaca College",
+    desc: "Developed and maintained lab safety training materials across Canvas LMS for departments spanning the sciences, humanities, and health professions. Responsibilities included building module structures, embedding multimedia content, configuring assessments with rubric alignment, conducting accessibility checks, and supporting faculty with course setup. This work helped create reusable training structures that could be adapted across different lab and instructional contexts.",
+    video: "/videos/edtech/lab.mp4",
+    accent: "#0C7C7C",
+    flipped: false,
+  },
+  {
+    id: "anatomy",
+    title: "Human Anatomy Lab Biosafety Course",
+    org: "Physical Therapy Dept · School of HSHP",
+    desc: "Co-developed a comprehensive biosafety training course for the Human Anatomy Lab, specifically tailored for Physician Assistant students working with cadaveric specimens. Collaborated with the Environmental Health and Safety Department and the School of Health Sciences and Human Performance to support institutional biosafety expectations, lab procedures, and safe learning practices.",
+    video: "/videos/edtech/HALlab.mp4",
+    accent: "#6B4D8A",
+    flipped: true,
+  },
+  {
+    id: "radiation",
+    title: "Radiation Safety",
+    org: "Chemistry Dept · School of H&S",
+    desc: "Designed and deployed a radiation safety training course for the Chemistry Department in collaboration with the Environmental Health and Safety Office. Developed multimedia modules covering proper handling, dosimetry, waste disposal, and emergency protocols. The course supported faculty and research students as part of the onboarding and lab preparation process.",
+    video: "/videos/edtech/radlab.mp4",
+    accent: "#9A5E2A",
+    flipped: false,
+  },
+  {
+    id: "ai-research",
+    title: "AI Platform Research",
+    org: "Ed Tech Office · Ithaca College",
+    desc: "Conducted an evaluation of AI platforms for possible instructional use, considering pedagogical alignment, privacy, accessibility, Canvas compatibility, cost, scalability, and faculty onboarding needs. The work helped inform conversations around how AI tools could be thoughtfully introduced into teaching and learning contexts.",
+    video: "/videos/edtech/ai-platform-research.mp4",
+    accent: "#3D6B82",
+    flipped: true,
+  },
+  {
+    id: "mtd-gpt",
+    title: "MTD Performance Evaluations GPT",
+    org: "School of Music, Theatre & Dance · Ithaca College",
+    desc: "Built a custom AI agent using Claude Code to support faculty with student performance evaluations in the School of Music, Theatre and Dance. The tool was designed to work with rubric criteria, student portfolio material, and structured evaluation drafts, helping streamline a process that had previously required extensive manual writing and formatting.",
+    video: "/videos/edtech/MDALchat.mp4",
+    accent: "#0C7C7C",
+    flipped: false,
+  },
+];
+
+/* ══════════════════════════════════════════════════════════
+   TOOLS
+   ══════════════════════════════════════════════════════════ */
+const TOOLS = [
+  "Canvas LMS",
+  "Kaltura",
+  "Camtasia",
+  "Adobe Illustrator",
+  "Premiere Pro",
+  "Claude Code",
+  "ChatGPT",
+  "Copilot Studio",
+  "Gamma",
+  "Supabase",
+];
+
+/* ══════════════════════════════════════════════════════════
+   useIsMobile
+   ══════════════════════════════════════════════════════════ */
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 768px)");
+    const handler = () => setIsMobile(mq.matches);
+    mq.addEventListener("change", handler);
+    setIsMobile(mq.matches);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  return isMobile;
+}
+
+/* ══════════════════════════════════════════════════════════
+   FadeUp
+   ══════════════════════════════════════════════════════════ */
+function FadeUp({
+  children,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-8%" }}
-      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay }}
     >
       {children}
     </motion.div>
   );
 }
 
-function Photo({ label, accent = "#5BC8C8", h = 180 }: {
-  label: string; accent?: string; h?: number;
-}) {
+/* ══════════════════════════════════════════════════════════
+   RIGHT-COLUMN PHOTO GALLERY  (lab-page style)
+   ══════════════════════════════════════════════════════════ */
+const xOffsets = [0, 8, -6, 4, -8];
+
+function PhotoGallery() {
   return (
-    <div style={{
-      width: "100%", height: h,
-      border: `1px dashed ${accent}50`,
-      borderRadius: 10, background: `${accent}08`,
-      display: "flex", flexDirection: "column",
-      alignItems: "center", justifyContent: "center",
-      gap: "0.4rem", flexShrink: 0,
-    }}>
-      <span style={{ fontSize: "0.9rem", color: accent, opacity: 0.4 }}>+</span>
-      <span style={{
-        fontFamily:    "var(--font-inter), system-ui, sans-serif",
-        fontSize:      "0.5rem", letterSpacing: "0.18em",
-        textTransform: "uppercase", color: accent,
-        opacity: 0.55, textAlign: "center", padding: "0 1rem",
-      }}>
-        {label}
-      </span>
+    <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
+      {PHOTOS.map((photo, i) => {
+        const rotate = photo.rotate ?? 0;
+        const xShift = xOffsets[i % xOffsets.length];
+        return (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-5%" }}
+            transition={{
+              duration: 0.7,
+              ease: [0.22, 1, 0.36, 1],
+              delay: (i % 3) * 0.08,
+            }}
+            style={{
+              width: "100%",
+              borderRadius: 10,
+              overflow: "hidden",
+              transform: `rotate(${rotate}deg) translateX(${xShift}px)`,
+              flexShrink: 0,
+            }}
+          >
+            {photo.src ? (
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  height: "auto",
+                  objectFit: "cover",
+                }}
+              />
+            ) : (
+              <div
+                style={{
+                  height: 160,
+                  border: "1px dashed rgba(15,23,42,0.15)",
+                  borderRadius: 10,
+                  background: "rgba(15,23,42,0.03)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "var(--font-inter), system-ui, sans-serif",
+                    fontSize: "0.9rem",
+                    color: "rgba(15,23,42,0.18)",
+                  }}
+                >
+                  +
+                </span>
+              </div>
+            )}
+          </motion.div>
+        );
+      })}
     </div>
   );
 }
 
-const TEAL   = "#5BC8C8";
-const ORANGE = "#E8A060";
-const PURPLE = "#A87EC8";
-const BLUE   = "#A8C4D4";
+/* ══════════════════════════════════════════════════════════
+   VIDEO PLAYER
+   ══════════════════════════════════════════════════════════ */
+function VideoPlayer({ src }: { src: string }) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
-const AI_PROJECTS = [
-  {
-    title:  "MTD Performance Evaluations GPT",
-    org:    "School of Music, Theatre and Dance · Ithaca College",
-    desc:   "Built a custom AI agent to support performance evaluations of students for faculty with Claude Code. Streamlined a complex evaluation workflow into an efficient AI-assisted process.",
-    photo:  "MTD GPT · screenshot",
-    accent: TEAL,
-  },
-  {
-    title:  "AI Platform Research",
-    org:    "Ed Tech Office · Ithaca College",
-    desc:   "Researched and evaluated multiple AI platforms for educational use — assessing pedagogical value, accessibility, and integration potential with Canvas LMS.",
-    photo:  "AI platforms · research doc",
-    accent: BLUE,
-  },
-];
+  useEffect(() => {
+    const vid = videoRef.current;
+    const container = containerRef.current;
+    if (!vid || !container) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            vid.pause();
+            return;
+          }
+          const allVideos = document.querySelectorAll<HTMLVideoElement>(
+            "[data-edtech-video='true']"
+          );
+          allVideos.forEach((v) => {
+            if (v !== vid) v.pause();
+          });
+          vid.play().catch(() => {});
+        });
+      },
+      { threshold: 0.65 }
+    );
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [src]);
 
-const COURSE_PROJECTS = [
-  {
-    title:  "Radiation Safety",
-    org:    "Chemistry Department · School of H&S",
-    desc:   "Developed and deployed radiation safety training modules for the Chemistry Department. Aligned content with institutional lab safety standards and OSHA guidelines.",
-    photo:  "Radiation safety · Canvas module",
-    accent: ORANGE,
-  },
-  {
-    title:  "Human Anatomy Lab Biosafety Course",
-    org:    "Physical Therapy Department · School of HSHP",
-    desc:   "Co-developed a human anatomy lab biosafety course for Physician Assistant students. Collaborated with Environmental Health and Safety and the School of Health Sciences.",
-    photo:  "HAL biosafety · course screenshot",
-    accent: PURPLE,
-  },
-  {
-    title:  "Canvas LMS Development",
-    org:    "Various Departments · Ithaca College",
-    desc:   "Developed multiple courses on Canvas LMS — including multimedia content, instructional design, accessibility review, and faculty training across departments.",
-    photo:  "Canvas LMS · course view",
-    accent: TEAL,
-  },
-];
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        width: "100%",
+        aspectRatio: "16 / 9",
+        borderRadius: "26px",
+        overflow: "hidden",
+        background: "#F3F4F6",
+        boxShadow: "0 18px 45px rgba(15, 23, 42, 0.12)",
+      }}
+    >
+      <video
+        ref={videoRef}
+        data-edtech-video="true"
+        src={src}
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        controls
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "block",
+          objectFit: "cover",
+        }}
+      />
+    </div>
+  );
+}
 
-const MEDIA_ITEMS = [
-  { label: "Instructional video · course walkthrough", accent: TEAL   },
-  { label: "Lab safety animation",                     accent: ORANGE },
-  { label: "Course illustration · biology diagram",    accent: PURPLE },
-  { label: "Edited faculty training video",            accent: BLUE   },
-];
-
-function ProjectCard({ title, org, desc, photo, accent }: {
-  title: string; org: string; desc: string; photo: string; accent: string;
+/* ══════════════════════════════════════════════════════════
+   PROJECT CARD  — unchanged from previous version
+   ══════════════════════════════════════════════════════════ */
+function ProjectCard({
+  project,
+  isMobile,
+}: {
+  project: (typeof PROJECTS)[0];
+  isMobile: boolean;
 }) {
+  const { title, org, desc, video, accent, flipped } = project;
+
+  let flexDirection: React.CSSProperties["flexDirection"] = "row";
+  let borderLeft: string | undefined = `5px solid ${accent}`;
+  let borderRight: string | undefined = undefined;
+
+  if (isMobile) {
+    flexDirection = "column";
+    borderLeft = `5px solid ${accent}`;
+    borderRight = undefined;
+  } else if (flipped) {
+    flexDirection = "row-reverse";
+    borderLeft = undefined;
+    borderRight = `5px solid ${accent}`;
+  }
+
   return (
     <FadeUp>
-      <div style={{
-        borderLeft:   `4px solid ${accent}`,
-        borderRadius: "0 16px 16px 0",
-        background:   "rgba(246,241,234,0.03)",
-        overflow:     "hidden",
-        marginBottom: "1rem",
-      }}>
-        <div className="card-split" style={{
-          display: "grid", gridTemplateColumns: "3fr 1fr", gap: 0,
-        }}>
-          <div style={{ padding: "2rem 2rem 2rem 1.8rem" }}>
-            <p style={{
-              fontFamily:    "var(--font-inter), system-ui, sans-serif",
-              fontSize:      "0.55rem", letterSpacing: "0.3em",
-              textTransform: "uppercase", color: accent, marginBottom: "0.5rem",
-            }}>
-              {org}
-            </p>
-            <h3 style={{
-              fontFamily:   "var(--font-cormorant), Georgia, serif",
-              fontSize:     "clamp(1.5rem, 2.5vw, 2.2rem)",
-              fontWeight:   300, color: "#F6F1EA",
-              marginBottom: "0.85rem", lineHeight: 1.15,
-            }}>
-              {title}
-            </h3>
-            <p style={{
+      <article
+        style={{
+          display: "flex",
+          flexDirection,
+          gap: isMobile ? "26px" : "38px",
+          alignItems: "center",
+          padding: isMobile ? "24px" : "34px",
+          borderRadius: "30px",
+          background: "#FFFFFF",
+          borderLeft,
+          borderRight,
+          boxShadow: "0 22px 58px rgba(15, 23, 42, 0.10)",
+          marginBottom: "40px",
+        }}
+      >
+        {/* Text */}
+        <div style={{ flex: isMobile ? "1 1 auto" : "0 0 40%" }}>
+          <p
+            style={{
+              margin: "0 0 12px",
+              color: accent,
+              fontSize: "0.62rem",
+              fontWeight: 700,
+              letterSpacing: "0.28em",
+              textTransform: "uppercase",
               fontFamily: "var(--font-inter), system-ui, sans-serif",
-              fontSize: "0.85rem", lineHeight: 1.8,
-              color: "rgba(246,241,234,0.72)",
-            }}>
-              {desc}
-            </p>
-          </div>
-          <div style={{ padding: "1.5rem 1.5rem 1.5rem 0", borderLeft: `1px solid ${accent}15` }}>
-            <Photo label={photo} accent={accent} h={160} />
-          </div>
+            }}
+          >
+            {org}
+          </p>
+          <h3
+            style={{
+              margin: "0 0 16px",
+              color: "#111827",
+              fontSize: isMobile ? "1.45rem" : "1.9rem",
+              lineHeight: 1.1,
+              fontWeight: 300,
+              letterSpacing: "-0.02em",
+              fontFamily: "var(--font-cormorant), Georgia, serif",
+            }}
+          >
+            {title}
+          </h3>
+          <p
+            style={{
+              margin: 0,
+              color: "#4B5563",
+              fontSize: "0.91rem",
+              lineHeight: 1.78,
+              fontFamily: "var(--font-inter), system-ui, sans-serif",
+            }}
+          >
+            {desc}
+          </p>
         </div>
-      </div>
+
+        {/* Video */}
+        <div
+          style={{
+            flex: isMobile ? "1 1 auto" : "1 1 60%",
+            width: "100%",
+            minWidth: 0,
+          }}
+        >
+          <VideoPlayer src={video} />
+        </div>
+      </article>
     </FadeUp>
   );
 }
 
+/* ══════════════════════════════════════════════════════════
+   PAGE
+   ══════════════════════════════════════════════════════════ */
 export default function EdTechPage() {
-  return (
-    <main style={{
-      backgroundColor: "#0C0C14", color: "#F6F1EA",
-      minHeight: "100vh", overflowX: "hidden",
-    }}>
-      <div className="max-w-[1060px] mx-auto" style={{ padding: "7rem 2rem 6rem" }}>
+  const isMobile = useIsMobile();
 
-        {/* Header */}
+  return (
+    <main
+      style={{
+        minHeight: "100vh",
+        background:
+          "linear-gradient(180deg, #FFFDF8 0%, #F8FBFD 45%, #FFF9F2 100%)",
+        color: "#1F2937",
+        padding: "7rem 2rem 6rem",
+      }}
+    >
+      <div className="max-w-[1200px] mx-auto">
+
+        {/* ──────────────── HEADER ──────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
           style={{ marginBottom: "4rem" }}
         >
-          <p style={{
-            fontFamily: "var(--font-inter), system-ui, sans-serif",
-            fontSize: "0.55rem", letterSpacing: "0.55em",
-            textTransform: "uppercase", color: TEAL, marginBottom: "0.9rem",
-          }}>
-            Ed Tech
+          <p
+            style={{
+              fontFamily: "var(--font-inter), system-ui, sans-serif",
+              fontSize: "0.58rem",
+              letterSpacing: "0.5em",
+              textTransform: "uppercase",
+              color: "#0C7C7C",
+              marginBottom: "0.9rem",
+            }}
+          >
+            Ithaca College · IT &amp; Analytics
           </p>
-          <h1 style={{
-            fontFamily:    "var(--font-cormorant), Georgia, serif",
-            fontSize:      "clamp(3rem, 8vw, 6.5rem)",
-            fontWeight:    300, color: "#F6F1EA",
-            letterSpacing: "-0.035em", lineHeight: 0.92,
-            maxWidth: "14ch", marginBottom: "1.8rem",
-          }}>
-            Building tools that teach.
+          <h1
+            style={{
+              fontFamily: "var(--font-cormorant), Georgia, serif",
+              fontSize: "clamp(2.4rem, 5vw, 4.2rem)",
+              fontWeight: 300,
+              color: "#111827",
+              letterSpacing: "-0.025em",
+              lineHeight: 1,
+              marginBottom: "1.5rem",
+            }}
+          >
+            Ed Tech.
           </h1>
-          <p style={{
-            fontFamily: "var(--font-cormorant), Georgia, serif",
-            fontSize:   "clamp(1.1rem, 1.8vw, 1.4rem)",
-            lineHeight: 1.7, color: "rgba(246,241,234,0.72)", maxWidth: "52ch",
-          }}>
-            As an Ed Tech Specialist at Ithaca College, I build AI agents,
-            develop courses, produce media, and translate complex science into
-            accessible learning experiences.
+          <p
+            style={{
+              fontFamily: "var(--font-cormorant), Georgia, serif",
+              fontSize: "clamp(1.1rem, 1.7vw, 1.35rem)",
+              lineHeight: 1.7,
+              color: "rgba(26,20,16,0.62)",
+              maxWidth: "56ch",
+            }}
+          >
+            Building AI agents, developing safety courses, producing
+            instructional media, and translating complex science into accessible
+            learning experiences.
           </p>
         </motion.div>
 
-        {/* Stats */}
-        <FadeUp>
-          <div style={{
-            display:             "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gap:                 "1px",
-            background:          `${TEAL}18`,
-            borderRadius:         16,
-            overflow:            "hidden",
-            marginBottom:        "5rem",
-          }}>
-            {[
-              { num: "100+",  label: "Faculty & students reached"     },
-              { num: "★★★★★", label: "Very high positive response rate" },
-              { num: "3",     label: "Departments collaborated with"  },
-            ].map((s) => (
-              <div key={s.label} style={{
-                background: "#0C0C14", padding: "2rem", textAlign: "center",
-              }}>
-                <p style={{
-                  fontFamily:    "var(--font-cormorant), Georgia, serif",
-                  fontSize:      "clamp(2rem, 4vw, 3.5rem)",
-                  fontWeight:    300, color: TEAL,
-                  letterSpacing: "-0.02em", lineHeight: 1, marginBottom: "0.5rem",
-                }}>
-                  {s.num}
-                </p>
-                <p style={{
-                  fontFamily:    "var(--font-inter), system-ui, sans-serif",
-                  fontSize:      "0.62rem", letterSpacing: "0.18em",
-                  textTransform: "uppercase", color: "rgba(246,241,234,0.55)",
-                }}>
-                  {s.label}
-                </p>
-              </div>
-            ))}
+        {/* ──────────────── 75 / 25 SPLIT — What I Do + Photos ──────────────── */}
+        <div
+          className="edtech-split"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "3fr 1fr",
+            gap: "2.5rem",
+            alignItems: "flex-start",
+            marginBottom: "4rem",
+          }}
+        >
+          {/* ── LEFT — What I Do ─────────────────── */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              borderTop: "1px solid rgba(15,23,42,0.06)",
+              borderRight: "1px solid rgba(15,23,42,0.06)",
+              borderBottom: "1px solid rgba(15,23,42,0.06)",
+              borderLeft: "4px solid #0C7C7C",
+              borderRadius: "0 20px 20px 0",
+              background: "rgba(255,255,255,0.7)",
+              padding: "2.4rem 2.4rem 2.4rem 2.2rem",
+              boxShadow: "0 4px 20px rgba(15,23,42,0.05)",
+            }}
+          >
+            <p
+              style={{
+                fontFamily: "var(--font-inter), system-ui, sans-serif",
+                fontSize: "0.58rem",
+                letterSpacing: "0.32em",
+                textTransform: "uppercase",
+                color: "#0C7C7C",
+                marginBottom: "0.55rem",
+              }}
+            >
+              My Role
+            </p>
+            <h2
+              style={{
+                fontFamily: "var(--font-cormorant), Georgia, serif",
+                fontSize: "clamp(1.8rem, 3vw, 2.8rem)",
+                fontWeight: 300,
+                color: "#111827",
+                letterSpacing: "-0.02em",
+                lineHeight: 1,
+                marginBottom: "1.2rem",
+              }}
+            >
+              What I Do
+            </h2>
+            <p
+              style={{
+                fontFamily: "var(--font-inter), system-ui, sans-serif",
+                fontSize: "0.91rem",
+                lineHeight: 1.82,
+                color: "#4B5563",
+                marginBottom: "1rem",
+              }}
+            >
+              As an Immersive and Ed Tech Specialist within IT &amp; Analytics
+              at Ithaca College, I work at the intersection of technology,
+              education, and design. I research and help faculty with various
+              educational technologies — including Canvas LMS and Kaltura —
+              ensuring they have the tools to teach effectively. I build
+              goal-based and utility-based AI agents and GPTs to analyze and
+              manipulate datasets, and produce instructional media with a focus
+              on improving clarity and accessibility.
+            </p>
+            <p
+              style={{
+                fontFamily: "var(--font-inter), system-ui, sans-serif",
+                fontSize: "0.91rem",
+                lineHeight: 1.82,
+                color: "#4B5563",
+                marginBottom: "1rem",
+              }}
+            >
+              My work spans multiple departments and disciplines. I developed a
+              lab safety course in collaboration with the Environmental Health
+              and Safety Department, which was implemented across over 100
+              faculty members and research students, achieving a 99.8% positive
+              response rate. I have collaborated with the School of Health
+              Sciences and Human Performance to develop a specialized human
+              anatomy lab safety course for the Physician Assistant program, and
+              partnered with the Chemistry Department to develop a Radiation
+              Safety Course.
+            </p>
+            <p
+              style={{
+                fontFamily: "var(--font-inter), system-ui, sans-serif",
+                fontSize: "0.91rem",
+                lineHeight: 1.82,
+                color: "#4B5563",
+                margin: 0,
+              }}
+            >
+              My toolkit includes Adobe Illustrator, Premiere Pro, Camtasia,
+              and a growing proficiency in AI development — all in service of
+              making complex information more accessible and engaging.
+            </p>
+          </motion.div>
+
+          {/* ── RIGHT 25% — photo gallery ── */}
+          {/*
+              To add a photo:    go to const PHOTOS at the top,
+                                 set src: "/images/edtech/yourfile.jpg"
+              To remove a photo: delete its object from PHOTOS
+              To reorder:        move the object up / down in PHOTOS
+          */}
+          <div style={{ paddingTop: "0.5rem" }}>
+            <PhotoGallery />
           </div>
-        </FadeUp>
+        </div>
 
-        {/* Section 1 — AI */}
-        <FadeUp>
-          <p style={{
-            fontFamily: "var(--font-inter), system-ui, sans-serif",
-            fontSize: "0.52rem", letterSpacing: "0.45em",
-            textTransform: "uppercase", color: TEAL, marginBottom: "0.6rem",
-          }}>
-            01 — AI & Automation
+        {/* ──────────────── PROJECTS COMPLETED (full width) ──────────────── */}
+        <div style={{ marginBottom: "4rem" }}>
+          <p
+            style={{
+              fontFamily: "var(--font-inter), system-ui, sans-serif",
+              fontSize: "0.56rem",
+              letterSpacing: "0.42em",
+              textTransform: "uppercase",
+              color: "#0C7C7C",
+              marginBottom: "1.6rem",
+            }}
+          >
+            Projects Completed
           </p>
-          <h2 style={{
-            fontFamily:    "var(--font-cormorant), Georgia, serif",
-            fontSize:      "clamp(1.8rem, 3vw, 3rem)",
-            fontWeight:    300, color: "#F6F1EA",
-            letterSpacing: "-0.02em", marginBottom: "2rem",
-          }}>
-            Agents, models, and intelligent tools.
-          </h2>
-        </FadeUp>
-        {AI_PROJECTS.map((p) => <ProjectCard key={p.title} {...p} />)}
+          <FadeUp>
+            <h2
+              style={{
+                fontFamily: "var(--font-cormorant), Georgia, serif",
+                fontSize: "clamp(1.8rem, 3.5vw, 3rem)",
+                fontWeight: 300,
+                color: "#111827",
+                letterSpacing: "-0.025em",
+                lineHeight: 1.05,
+                marginBottom: "2.4rem",
+              }}
+            >
+              Courses, AI tools, and instructional systems I have built.
+            </h2>
+          </FadeUp>
 
-        <div style={{ height: "3rem" }} />
+          {PROJECTS.map((project) => (
+            <ProjectCard key={project.id} project={project} isMobile={isMobile} />
+          ))}
+        </div>
 
-        {/* Section 2 — Courses */}
-        <FadeUp>
-          <p style={{
-            fontFamily: "var(--font-inter), system-ui, sans-serif",
-            fontSize: "0.52rem", letterSpacing: "0.45em",
-            textTransform: "uppercase", color: ORANGE, marginBottom: "0.6rem",
-          }}>
-            02 — Course Development
+        {/* ──────────────── PLATFORMS & TOOLS ──────────────── */}
+        <div style={{ marginTop: "1rem" }}>
+          <p
+            style={{
+              fontFamily: "var(--font-inter), system-ui, sans-serif",
+              fontSize: "0.56rem",
+              letterSpacing: "0.42em",
+              textTransform: "uppercase",
+              color: "#0C7C7C",
+              marginBottom: "1.2rem",
+            }}
+          >
+            Platforms &amp; Tools
           </p>
-          <h2 style={{
-            fontFamily:    "var(--font-cormorant), Georgia, serif",
-            fontSize:      "clamp(1.8rem, 3vw, 3rem)",
-            fontWeight:    300, color: "#F6F1EA",
-            letterSpacing: "-0.02em", marginBottom: "2rem",
-          }}>
-            Safety, science, and learning design.
-          </h2>
-        </FadeUp>
-        {COURSE_PROJECTS.map((p) => <ProjectCard key={p.title} {...p} />)}
-
-        <div style={{ height: "3rem" }} />
-
-        {/* Section 3 — Media */}
-        <FadeUp>
-          <p style={{
-            fontFamily: "var(--font-inter), system-ui, sans-serif",
-            fontSize: "0.52rem", letterSpacing: "0.45em",
-            textTransform: "uppercase", color: PURPLE, marginBottom: "0.6rem",
-          }}>
-            03 — Media Production
-          </p>
-          <h2 style={{
-            fontFamily:    "var(--font-cormorant), Georgia, serif",
-            fontSize:      "clamp(1.8rem, 3vw, 3rem)",
-            fontWeight:    300, color: "#F6F1EA",
-            letterSpacing: "-0.02em", marginBottom: "2rem",
-          }}>
-            Video, illustration, animation.
-          </h2>
-        </FadeUp>
-        <FadeUp delay={0.05}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1rem" }}>
-            {MEDIA_ITEMS.map((m) => (
-              <Photo key={m.label} label={m.label} accent={m.accent} h={200} />
+          <p
+            style={{
+              fontFamily: "var(--font-cormorant), Georgia, serif",
+              fontSize: "clamp(1.05rem, 1.5vw, 1.3rem)",
+              lineHeight: 1.75,
+              color: "rgba(26,20,16,0.5)",
+              fontStyle: "italic",
+              maxWidth: "72ch",
+            }}
+          >
+            {TOOLS.map((t, i) => (
+              <span key={t}>
+                {t}
+                {i < TOOLS.length - 1 && (
+                  <span
+                    aria-hidden="true"
+                    style={{ color: "rgba(15,23,42,0.2)", margin: "0 0.5em" }}
+                  >
+                    ·
+                  </span>
+                )}
+              </span>
             ))}
-          </div>
-        </FadeUp>
+          </p>
+        </div>
 
+        {/* ──────────────── FOOTER ──────────────── */}
+        <p
+          style={{
+            marginTop: "5rem",
+            fontFamily: "var(--font-inter), system-ui, sans-serif",
+            fontSize: "0.58rem",
+            letterSpacing: "0.28em",
+            textTransform: "uppercase",
+            color: "rgba(15,23,42,0.28)",
+          }}
+        >
+          Last updated · August 2026
+        </p>
       </div>
 
       <style jsx>{`
-        @media (max-width: 760px) {
-          .card-split { grid-template-columns: 1fr !important; }
+        @media (max-width: 860px) {
+          .edtech-split {
+            grid-template-columns: 1fr !important;
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation-duration: 0.001ms !important;
+            transition-duration: 0.001ms !important;
+          }
         }
       `}</style>
     </main>

@@ -4,55 +4,111 @@ import { motion, AnimatePresence } from "framer-motion";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 
 /* ══════════════════════════════════════════════════════════
-   DATA
+   PHOTOS  ← the ONLY place you touch for the right column
+   ══════════════════════════════════════════════════════════
+   Each entry:
+     src?    – path relative to /public, e.g. "/images/labs/me.jpg"
+               Leave undefined to keep a placeholder slot.
+     alt     – screen-reader text (never shown visually)
+     rotate  – tilt in degrees (optional, default 0)
+
+   ── ADD a photo   → append a new object with src set
+   ── REMOVE a photo → delete its object
+   ── REORDER       → move the object up / down
+   ── RESIZE        → nothing! Real images size themselves
+                       automatically from their actual dimensions.
+   ══════════════════════════════════════════════════════════ */
+const PHOTOS: { src?: string; alt: string; rotate?: number }[] = [
+  { alt: "Gondek Lab – Fall 2026",  rotate: -1.5, src: "/images/lab/20260720_C_KC_002.jpg" },
+  { alt: "Gondek Lab – Fall 2026",  rotate: -1.5, src: "/images/lab/talk.jpg" },
+  { alt: "Gondek Lab – Fall 2026",  rotate: -1.5, src: "/images/lab/summer.png" },
+  { alt: "Gondek Lab – Fall 2026",  rotate: -1.5, src: "/images/lab/crt.png" },
+  { alt: "Gondek Lab – Fall 2026",  rotate: -1.5, src: "/images/lab/lab2.1.png" },
+  { alt: "Gondek Lab – Fall 2026",  rotate: -1.5, src: "/images/lab/ok.jpg" }
+];
+
+/* ══════════════════════════════════════════════════════════
+   DATA  — labs only (no photos inside lab objects)
    ══════════════════════════════════════════════════════════ */
 
-const LABS = [
-  {
-    id:     "gondek",
-    lab:    "Gondek Lab",
-    pi:     "Prof. Dave Gondek",
-    period: "Fall 2026",
-    status: "upcoming",
-    accent: "#F2C95E",
-    bg:     "#1E1A08",
-    pageBg: "#121006",
-    focus: (
-      <>
-        Coming Fall 2026. Details will be added as the project begins.
-      </>
-    ),
-    details: [],
-    methods: "",
-    photos: [
-      { label: "Coming Fall 2026", h: 180, rotate: -1 },
-      { label: "Gondek Lab",       h: 160, rotate:  1 },
-      { label: "Placeholder",      h: 140, rotate: -1 },
-    ],
-  },
+interface UpcomingLab {
+  id:        string;
+  lab:       string;
+  pi:        string;
+  period:    string;
+  status:    "upcoming";
+  accent:    string;
+  bg:        string;
+  pageBg:    string;
+  intention: string;
+}
+
+interface ActiveLab {
+  id:      string;
+  lab:     string;
+  pi:      string;
+  period:  string;
+  status:  "active" | "completed";
+  role?:   string;
+  accent:  string;
+  bg:      string;
+  pageBg:  string;
+  focus:   React.ReactNode;
+  finding: string | null;
+  details: string[];
+  methods: string;
+}
+
+type AnyLab = UpcomingLab | ActiveLab;
+
+/* ── Upcoming ──────────────────────────────────────────── */
+const GONDEK: UpcomingLab = {
+  id:     "gondek",
+  lab:    "Gondek Lab",
+  pi:     "Prof. Gondek",
+  period: "Fall 2026",
+  status: "upcoming",
+  accent: "#9B8FD4",
+  bg:     "#1A1028",
+  pageBg: "#100A1A",
+  intention:
+    "Joining the Gondek Lab this fall. More info to be added as the semester begins.",
+};
+
+/* ── Active & completed (newest → oldest) ─────────────── */
+const LABS: ActiveLab[] = [
+  /* ── Woods Lab ─ Summer 2026 - H&S Summer Scholar ──────────────────────────── */
   {
     id:     "woods",
     lab:    "Woods Lab",
     pi:     "Prof. Ian Woods",
     period: "Summer 2026",
-    status: "upcoming",
+    status: "completed",
     accent: "#C49A73",
     bg:     "#181208",
     pageBg: "#0F0C07",
     focus: (
       <>
-        Coming Summer 2026. Details will be added as the project begins.
+        How do tardigrades walk? In the Woods Lab I am studying the gait
+        and locomotion of tardigrades — mapping how these eight-legged
+        microscopic animals coordinate their legs during forward movement,
+        and how environmental cues such as light gradients and chemical
+        attractants alter their locomotor strategy.
       </>
     ),
-    details: [],
-    methods: "",
-    photos: [
-      { label: "Coming Summer 2026", h: 180, rotate:  1   },
-      { label: "Woods Lab",          h: 160, rotate: -1.5 },
-      { label: "Placeholder",        h: 140, rotate:  1   },
+    finding:
+      "Tardigrades exhibit a surprisingly consistent alternating-leg gait, with measurable shifts in stepping sequence observable under aversive stimuli.",
+    details: [
+      "Found and identified tardigrades in NY Finger Lakes region for behavioral studies",
+      "Used high-resolution video microscopy to record and track individual tardigrade gait",
+      "Prepared permanent slides for morphological identification",
+      "Performed DNA extraction, PCR and analyzed DNA sequencing for genetic identification",
     ],
+    methods:
+      "sampling · microscopy · DNA extraction · PCR · gait analysis · image/video tracking",
   },
 
+  /* ── Melcher Lab ─ Aug 2025 – May 2026 ─────────────────── */
   {
     id:     "melcher",
     lab:    "Melcher Lab",
@@ -65,138 +121,176 @@ const LABS = [
     focus: (
       <>
         How do mosses survive freezing? I studied the physiological and
-        molecular responses of{" "}
-        <em>Dicranum scoparium</em> and{" "}
+        molecular responses of <em>Dicranum scoparium</em> and{" "}
         <em>Leucobryum glaucum</em> to freezing stress across two
         contrasting microhabitats on South Hill — comparing cold-stress
-        response by location and light exposure.
+        response by location, canopy cover, and treatment severity.
       </>
     ),
+    finding:
+      "Rapid freezing was detrimental to both species. Mosses in open-canopy sites tolerated freezing better than those under closed canopy.",
     details: [
-      "Designed and executed controlled freezing experiments with slow, rapid, and non-freeze treatments",
+      "Designed and ran controlled freezing experiments with slow, rapid, and non-freeze treatments",
       "Quantified membrane injury using electrolyte leakage assays and photosynthetic performance using chlorophyll fluorescence (Fv/Fm)",
       "Installed temperature dataloggers in the field to capture nighttime cooling patterns",
       "Analysed habitat-by-treatment effects in R and presented findings to the Biology Department",
-      "Measured gene expression responses and plant electrical signalling in response to temperature changes",
     ],
-    methods: "electrolyte leakage · Fv/Fm chlorophyll fluorescence · gene expression profiling · plant electrical signalling · R statistical analysis · field data collection",
-    photos: [
-      { label: "South Hill field site", h: 180, rotate: -1.5 },
-      { label: "Lab bench",             h: 140, rotate:  1.5 },
-      { label: "Poster presentation",   h: 160, rotate: -1   },
-    ],
+    methods:
+      "electrolyte leakage · Fv/Fm chlorophyll fluorescence · plant electrical signalling · R statistical analysis · field data collection",
   },
+
+  /* ── Swensen Lab ─ Jan 2024 – May 2024 ─────────────────── */
   {
     id:     "swensen",
     lab:    "Swensen Lab",
-    pi:     "Prof. Susan Swensen, Ithaca College",
+    pi:     "Prof. Susan Swensen",
     period: "Jan 2024 – May 2024",
     status: "completed",
+    role:   "Research assistant",
     accent: "#E85E7A",
     bg:     "#251018",
     pageBg: "#140810",
     focus: (
       <>
-        Population genetics of{" "}
-        <em>Scaevola plumieri</em>{" "}
-        (inkberry) in Puerto Rico — examining genetic variation using
-        microsatellite markers and characterising native population
-        structure relative to the invasive{" "}
+        Assisted a population-genetics project on{" "}
+        <em>Scaevola plumieri</em> (native inkberry) in Puerto Rico,
+        examining genetic variation with microsatellite markers and
+        comparing native populations against the invasive{" "}
         <em>Scaevola taccada</em>.
       </>
     ),
+    finding: null,
     details: [
-      "Supported a genetics research project on inkberry in Puerto Rico",
-      "Examined genetic variation using microsatellite markers",
-      "Assisted in characterising native population structure vs. invasive species impact",
-      "Maintained organised documentation to support repeatable workflows and sample tracking",
+      "Extracted DNA and ran microsatellite analyses under the direction of the PI",
+      "Helped compare native and invasive populations using gel electrophoresis",
+      "Maintained organised documentation to support sample tracking and repeatable workflows",
     ],
-    methods: "DNA extraction · microsatellite analysis · population structure analysis · gel electrophoresis · lab documentation",
-    photos: [
-      { label: "Puerto Rico field", h: 200, rotate:  1.5 },
-      { label: "Lab work",          h: 150, rotate: -1.5 },
-      { label: "Samples",           h: 160, rotate:  1   },
-    ],
+    methods:
+      "DNA extraction · microsatellite analysis · gel electrophoresis · lab documentation",
   },
+];
 
+/* ── Posters ────────────────────────────────────────────── */
+const POSTERS = [
+  {
+    title:  "Cold-stress response in two moss species across microhabitats",
+    venue:  "Whalen Symposium",
+    year:   "2026",
+    lab:    "Melcher Lab",
+    accent: "#53C8B4",
+  },
+  {
+    title:  "Freezing tolerance in different plant species",
+    venue:  "Whalen Symposium",
+    year:   "2026",
+    lab:    "Melcher Lab",
+    accent: "#53C8B4",
+  },
+];
+
+/* ── Methods cloud ──────────────────────────────────────── */
+const ALL_METHODS = [
+  "video microscopy",
+  "gait analysis",
+  "phototaxis assays",
+  "chemotaxis assays",
+  "aversive conditioning",
+  "image tracking",
+  "electrolyte leakage",
+  "Fv/Fm chlorophyll fluorescence",
+  "gene expression profiling",
+  "plant electrical signalling",
+  "R statistical analysis",
+  "field data collection",
+  "DNA extraction",
+  "microsatellite analysis",
+  "gel electrophoresis",
+  "lab documentation",
+  "Golden Gate Assembly",
 ];
 
 /* ══════════════════════════════════════════════════════════
-   PHOTO COLLAGE — 25% sticky right panel
-   Stacked vertically with slight offsets + rotations
+   RIGHT-COLUMN PHOTO GALLERY
+   – no labels
+   – real images size themselves from their own dimensions
+   – placeholders are neutral dashed boxes
    ══════════════════════════════════════════════════════════ */
+const xOffsets = [0, 8, -6, 4, -8, 6, -4, 10, -2];
 
-const offsets = [0, 10, -8];
-
-function PhotoCollage({ lab }: { lab: typeof LABS[0] }) {
+function PhotoGallery() {
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={lab.id}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{    opacity: 0 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-      >
-        {lab.photos.map((photo, i) => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
+      {PHOTOS.map((photo, i) => {
+        const rotate = photo.rotate ?? 0;
+        const xShift = xOffsets[i % xOffsets.length];
+
+        return (
           <motion.div
-            key={photo.label}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0  }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: i * 0.1 }}
+            key={i}
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-5%" }}
+            transition={{
+              duration: 0.7,
+              ease: [0.22, 1, 0.36, 1],
+              delay: (i % 3) * 0.08,
+            }}
             style={{
-              width:          "100%",
-              height:          photo.h,
-              borderRadius:    12,
-              border:         `1px dashed ${lab.accent}55`,
-              background:     `${lab.accent}0A`,
-              display:        "flex",
-              flexDirection:  "column",
-              alignItems:     "center",
-              justifyContent: "center",
-              gap:            "0.4rem",
-              transform:      `rotate(${photo.rotate}deg) translateX(${offsets[i] ?? 0}px)`,
-              flexShrink:      0,
+              width:       "100%",
+              borderRadius: 10,
+              overflow:    "hidden",
+              transform:   `rotate(${rotate}deg) translateX(${xShift}px)`,
+              flexShrink:   0,
             }}
           >
-            <span style={{
-              fontFamily: "var(--font-inter), system-ui, sans-serif",
-              fontSize:   "1rem",
-              color:       lab.accent,
-              opacity:     0.5,
-            }}>
-              +
-            </span>
-            <span style={{
-              fontFamily:    "var(--font-inter), system-ui, sans-serif",
-              fontSize:      "0.52rem",
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color:          lab.accent,
-              opacity:        0.7,
-              textAlign:     "center",
-              padding:       "0 0.5rem",
-              lineHeight:     1.4,
-            }}>
-              {photo.label}
-            </span>
+            {photo.src ? (
+              /* ── Real photo — sizes itself ─────────────
+                 width: 100% fills the column
+                 height: auto preserves aspect ratio       */
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                style={{
+                  display:   "block",
+                  width:     "100%",
+                  height:    "auto",
+                  objectFit: "cover",
+                }}
+              />
+            ) : (
+              /* ── Placeholder slot ──────────────────────
+                 Remove this block once src is set          */
+              <div
+                style={{
+                  height:         160,
+                  border:         "1px dashed rgba(246,241,234,0.15)",
+                  borderRadius:    10,
+                  background:     "rgba(246,241,234,0.03)",
+                  display:        "flex",
+                  alignItems:     "center",
+                  justifyContent: "center",
+                }}
+              >
+                <span style={{
+                  fontFamily: "var(--font-inter), system-ui, sans-serif",
+                  fontSize:   "0.9rem",
+                  color:      "rgba(246,241,234,0.18)",
+                }}>
+                  +
+                </span>
+              </div>
+            )}
           </motion.div>
-        ))}
-      </motion.div>
-    </AnimatePresence>
+        );
+      })}
+    </div>
   );
 }
 
 /* ══════════════════════════════════════════════════════════
    STATUS BADGE
    ══════════════════════════════════════════════════════════ */
-
-function StatusBadge({ status, accent }: { status: string; accent: string }) {
-  const labels: Record<string, string> = {
-    completed: "Completed",
-    upcoming:  "Upcoming",
-  };
+function StatusBadge({ label, accent }: { label: string; accent: string }) {
   return (
     <span style={{
       display:       "inline-flex",
@@ -215,22 +309,19 @@ function StatusBadge({ status, accent }: { status: string; accent: string }) {
         backgroundColor: accent,
         display:         "inline-block",
       }} />
-      {labels[status]}
+      {label}
     </span>
   );
 }
 
 /* ══════════════════════════════════════════════════════════
-   LAB SECTION — left 75%
+   LAB SECTION  (active / completed)
    ══════════════════════════════════════════════════════════ */
-
-type Lab = typeof LABS[0];
-
 function LabSection({
   lab,
   onVisible,
 }: {
-  lab:       Lab;
+  lab:       ActiveLab;
   onVisible: (id: string) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -246,7 +337,7 @@ function LabSection({
     return () => observer.disconnect();
   }, [lab.id, onVisible]);
 
-  const isUpcoming = lab.status === "upcoming";
+  const badgeLabel = lab.status === "active" ? "In Progress" : "Completed";
 
   return (
     <motion.div
@@ -282,6 +373,7 @@ function LabSection({
             marginBottom:  "0.6rem",
           }}>
             {lab.period} · {lab.pi}
+            {lab.role ? ` · ${lab.role}` : ""}
           </p>
           <h2 style={{
             fontFamily:    "var(--font-cormorant), Georgia, serif",
@@ -294,22 +386,51 @@ function LabSection({
             {lab.lab}
           </h2>
         </div>
-        <StatusBadge status={lab.status} accent={lab.accent} />
+        <StatusBadge label={badgeLabel} accent={lab.accent} />
       </div>
 
-      {/* Focus — high contrast */}
+      {/* Focus */}
       <p style={{
         fontFamily:   "var(--font-cormorant), Georgia, serif",
         fontSize:     "clamp(1.25rem, 2vw, 1.6rem)",
         lineHeight:   1.7,
         color:        "rgba(246,241,234,0.95)",
-        marginBottom: isUpcoming ? 0 : "2rem",
-        fontStyle:    isUpcoming ? "italic" : "normal",
+        marginBottom: "1.6rem",
       }}>
         {lab.focus}
       </p>
 
-      {/* Bullets — high contrast */}
+      {/* Finding callout */}
+      {lab.finding && (
+        <div style={{
+          borderLeft:   `2px solid ${lab.accent}`,
+          paddingLeft:  "1rem",
+          marginBottom: "2rem",
+        }}>
+          <p style={{
+            fontFamily:    "var(--font-inter), system-ui, sans-serif",
+            fontSize:      "0.58rem",
+            letterSpacing: "0.32em",
+            textTransform: "uppercase",
+            color:          lab.accent,
+            marginBottom:  "0.45rem",
+            opacity:        0.85,
+          }}>
+            Finding
+          </p>
+          <p style={{
+            fontFamily: "var(--font-cormorant), Georgia, serif",
+            fontSize:   "clamp(1.1rem, 1.6vw, 1.3rem)",
+            lineHeight: 1.6,
+            color:      "rgba(246,241,234,0.92)",
+            fontStyle:  "italic",
+          }}>
+            {lab.finding}
+          </p>
+        </div>
+      )}
+
+      {/* Bullet details */}
       {lab.details.length > 0 && (
         <ul style={{
           listStyle:     "none",
@@ -340,7 +461,7 @@ function LabSection({
         </ul>
       )}
 
-      {/* Methods line */}
+      {/* Methods */}
       {lab.methods && (
         <div style={{
           borderTop:  `1px solid ${lab.accent}30`,
@@ -375,17 +496,103 @@ function LabSection({
 }
 
 /* ══════════════════════════════════════════════════════════
+   UPCOMING CARD
+   ══════════════════════════════════════════════════════════ */
+function NextCard({
+  lab,
+  onVisible,
+}: {
+  lab:       UpcomingLab;
+  onVisible: (id: string) => void;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) onVisible(lab.id); },
+      { threshold: 0.35 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [lab.id, onVisible]);
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+      style={{
+        borderLeft:   `2px dashed ${lab.accent}`,
+        background:    lab.bg,
+        borderRadius: "0 16px 16px 0",
+        padding:      "2rem 2rem 2rem 1.8rem",
+        marginBottom: "1rem",
+      }}
+    >
+      <div style={{
+        display:        "flex",
+        justifyContent: "space-between",
+        alignItems:     "flex-start",
+        flexWrap:       "wrap",
+        gap:            "1rem",
+        marginBottom:   "1rem",
+      }}>
+        <div>
+          <p style={{
+            fontFamily:    "var(--font-inter), system-ui, sans-serif",
+            fontSize:      "0.58rem",
+            letterSpacing: "0.32em",
+            textTransform: "uppercase",
+            color:          lab.accent,
+            marginBottom:  "0.5rem",
+          }}>
+            {lab.period} · {lab.pi}
+          </p>
+          <h3 style={{
+            fontFamily:    "var(--font-cormorant), Georgia, serif",
+            fontSize:      "clamp(1.6rem, 2.5vw, 2.2rem)",
+            fontWeight:    300,
+            color:         "#F6F1EA",
+            letterSpacing: "-0.01em",
+            lineHeight:    1,
+          }}>
+            {lab.lab}
+          </h3>
+        </div>
+        <StatusBadge label="Upcoming" accent={lab.accent} />
+      </div>
+      <p style={{
+        fontFamily: "var(--font-cormorant), Georgia, serif",
+        fontSize:   "clamp(1.05rem, 1.5vw, 1.25rem)",
+        lineHeight: 1.65,
+        color:      "rgba(246,241,234,0.8)",
+        fontStyle:  "italic",
+        maxWidth:   "58ch",
+      }}>
+        {lab.intention}
+      </p>
+    </motion.div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
    PAGE
    ══════════════════════════════════════════════════════════ */
-
 export default function ResearchPage() {
-  const [activeLab, setActiveLab] = useState("melcher");
+  const [activeId, setActiveId] = useState<string>(GONDEK.id);
 
   const handleVisible = useCallback((id: string) => {
-    setActiveLab(id);
+    setActiveId(id);
   }, []);
 
-  const active = LABS.find((l) => l.id === activeLab) ?? LABS[0];
+  const active: AnyLab =
+    activeId === GONDEK.id
+      ? GONDEK
+      : (LABS.find((l) => l.id === activeId) ?? GONDEK);
 
   return (
     <motion.main
@@ -395,7 +602,7 @@ export default function ResearchPage() {
     >
       <div className="max-w-[1200px] mx-auto">
 
-        {/* Header */}
+        {/* ──────────────── HEADER ──────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
@@ -414,30 +621,29 @@ export default function ResearchPage() {
           </p>
           <h1 style={{
             fontFamily:    "var(--font-cormorant), Georgia, serif",
-            fontSize:      "clamp(3rem, 7vw, 6rem)",
+            fontSize:      "clamp(2.4rem, 5vw, 4.2rem)",
             fontWeight:    300,
             color:         "#F6F1EA",
-            letterSpacing: "-0.035em",
-            lineHeight:    0.92,
-            maxWidth:      "16ch",
+            letterSpacing: "-0.025em",
+            lineHeight:    1,
             marginBottom:  "1.5rem",
           }}>
-            Studying how living organisms sense the world.
+            Lab work.
           </h1>
           <p style={{
             fontFamily: "var(--font-cormorant), Georgia, serif",
-            fontSize:   "clamp(1.15rem, 1.8vw, 1.45rem)",
+            fontSize:   "clamp(1.1rem, 1.7vw, 1.35rem)",
             lineHeight: 1.7,
-            color:      "rgba(246,241,234,0.8)",
-            maxWidth:   "52ch",
+            color:      "rgba(246,241,234,0.78)",
+            maxWidth:   "56ch",
           }}>
-            From electrical signals in plants to gut microbiome dynamics:
-            I have worked across systems to understand how organisms respond to
-            stress, change, and environment.
+            From moss freezing tolerance to tardigrade locomotion — each lab
+            has taught me a different way of asking questions. Two completed
+            projects, one active summer, one beginning this fall.
           </p>
         </motion.div>
 
-        {/* 75 / 25 SPLIT */}
+        {/* ──────────────── 75 / 25 SPLIT ──────────────── */}
         <div
           className="research-split"
           style={{
@@ -447,35 +653,143 @@ export default function ResearchPage() {
             alignItems:          "flex-start",
           }}
         >
-          {/* LEFT 75% */}
+          {/* ── LEFT 75% — lab cards ─────────────────── */}
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+
+            {/* Upcoming */}
+            <div style={{ marginBottom: "0.5rem" }}>
+              <p style={{
+                fontFamily:    "var(--font-inter), system-ui, sans-serif",
+                fontSize:      "0.56rem",
+                letterSpacing: "0.42em",
+                textTransform: "uppercase",
+                color:         "#C4475B",
+                marginBottom:  "1.2rem",
+              }}>
+                What&apos;s next
+              </p>
+              <NextCard lab={GONDEK} onVisible={handleVisible} />
+            </div>
+
+            {/* Active & completed */}
             {LABS.map((lab) => (
-              <LabSection
-                key={lab.id}
-                lab={lab}
-                onVisible={handleVisible}
-              />
+              <LabSection key={lab.id} lab={lab} onVisible={handleVisible} />
             ))}
+
+            {/* Poster presentations */}
+            <div style={{ marginTop: "3rem" }}>
+              <p style={{
+                fontFamily:    "var(--font-inter), system-ui, sans-serif",
+                fontSize:      "0.56rem",
+                letterSpacing: "0.42em",
+                textTransform: "uppercase",
+                color:         "#C4475B",
+                marginBottom:  "1.2rem",
+              }}>
+                Poster presentations
+              </p>
+              <div
+                className="posters-grid"
+                style={{
+                  display:             "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap:                 "1rem",
+                }}
+              >
+                {POSTERS.map((p, i) => (
+                  <motion.div
+                    key={`${p.title}-${i}`}
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-10%" }}
+                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 }}
+                    style={{
+                      borderLeft:   `3px solid ${p.accent}`,
+                      borderRadius: "0 14px 14px 0",
+                      background:   "rgba(15,46,40,0.55)",
+                      padding:      "1.4rem 1.4rem 1.4rem 1.2rem",
+                    }}
+                  >
+                    <p style={{
+                      fontFamily:    "var(--font-inter), system-ui, sans-serif",
+                      fontSize:      "0.55rem",
+                      letterSpacing: "0.3em",
+                      textTransform: "uppercase",
+                      color:          p.accent,
+                      marginBottom:  "0.55rem",
+                    }}>
+                      {p.venue} · {p.year}
+                    </p>
+                    <p style={{
+                      fontFamily: "var(--font-cormorant), Georgia, serif",
+                      fontSize:   "1.15rem",
+                      lineHeight: 1.5,
+                      color:      "rgba(246,241,234,0.92)",
+                      fontWeight: 300,
+                    }}>
+                      {p.title}
+                    </p>
+                    <p style={{
+                      marginTop:     "0.7rem",
+                      fontFamily:    "var(--font-inter), system-ui, sans-serif",
+                      fontSize:      "0.62rem",
+                      letterSpacing: "0.18em",
+                      textTransform: "uppercase",
+                      color:         "rgba(246,241,234,0.5)",
+                    }}>
+                      {p.lab}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Methods */}
+            <div style={{ marginTop: "3rem" }}>
+              <p style={{
+                fontFamily:    "var(--font-inter), system-ui, sans-serif",
+                fontSize:      "0.56rem",
+                letterSpacing: "0.42em",
+                textTransform: "uppercase",
+                color:         "#C4475B",
+                marginBottom:  "1.2rem",
+              }}>
+                Methods across labs
+              </p>
+              <p style={{
+                fontFamily: "var(--font-cormorant), Georgia, serif",
+                fontSize:   "clamp(1.05rem, 1.5vw, 1.25rem)",
+                lineHeight: 1.75,
+                color:      "rgba(246,241,234,0.7)",
+                fontStyle:  "italic",
+                maxWidth:   "70ch",
+              }}>
+                {ALL_METHODS.map((m, i) => (
+                  <span key={m}>
+                    {m}
+                    {i < ALL_METHODS.length - 1 && (
+                      <span aria-hidden="true" style={{ color: "rgba(246,241,234,0.3)", margin: "0 0.5em" }}>
+                        ·
+                      </span>
+                    )}
+                  </span>
+                ))}
+              </p>
+            </div>
           </div>
 
-          {/* RIGHT 25% — sticky */}
-          <div style={{ position: "sticky", top: "8rem" }}>
-            <p style={{
-              fontFamily:    "var(--font-inter), system-ui, sans-serif",
-              fontSize:      "0.52rem",
-              letterSpacing: "0.35em",
-              textTransform: "uppercase",
-              color:          active.accent,
-              opacity:        0.7,
-              marginBottom:  "1rem",
-            }}>
-              {active.lab}
-            </p>
-            <PhotoCollage lab={active} />
+          {/* ── RIGHT 25% — photo gallery, scrolls with page ── */}
+          {/*
+              To add a photo:   go to const PHOTOS at the top, add { src: "/images/labs/…", alt: "…" }
+              To remove a photo: delete its object from PHOTOS
+              To reorder:       move the object up / down in PHOTOS
+          */}
+          <div style={{ paddingTop: "0.5rem" }}>
+            <PhotoGallery />
           </div>
         </div>
 
-        {/* Footer */}
+        {/* ──────────────── FOOTER ──────────────── */}
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -486,19 +800,36 @@ export default function ResearchPage() {
             fontFamily: "var(--font-cormorant), Georgia, serif",
             fontSize:   "1rem",
             fontStyle:  "italic",
-            color:      "rgba(246,241,234,0.22)",
+            color:      "rgba(246,241,234,0.28)",
           }}
         >
-          This page grows with my research.
-          Woods Lab (Summer 2026) · Gondek Lab (Fall 2026) coming soon.
         </motion.p>
 
+        <p style={{
+          marginTop:     "1.4rem",
+          fontFamily:    "var(--font-inter), system-ui, sans-serif",
+          fontSize:      "0.58rem",
+          letterSpacing: "0.28em",
+          textTransform: "uppercase",
+          color:         "rgba(246, 241, 234, 0.89)",
+        }}>
+          Last updated · August 2026
+        </p>
       </div>
 
       <style jsx>{`
         @media (max-width: 860px) {
           .research-split {
             grid-template-columns: 1fr !important;
+          }
+          .posters-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation-duration: 0.001ms !important;
+            transition-duration: 0.001ms !important;
           }
         }
       `}</style>

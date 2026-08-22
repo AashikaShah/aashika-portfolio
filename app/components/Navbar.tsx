@@ -9,11 +9,10 @@ const navLinks = [
   { label: "Home",     href: "/"         },
   { label: "Academic", href: "/academic" },
   { label: "Work",     href: "/work"     },
-  { label: "Story",    href: "/story"    },
+  { label: "Personal",    href: "/story"    },
 ];
 
-// ── Add any light-background pages here ──────────────────
-const lightPages = ["/academic", "/work/campus"];
+const lightPages = ["/academic", "/work/campus" ,"/work/bold" , "/work/edtech"];
 
 export default function Navbar() {
   const [scrolled,    setScrolled]    = useState(false);
@@ -22,8 +21,6 @@ export default function Navbar() {
   const [menuOpen,    setMenuOpen]    = useState(false);
   const pathname = usePathname();
 
-  // true = we're on a light page AND haven't scrolled yet
-  // (once scrolled, the dark backdrop kicks in so white text is fine again)
   const isLightPage  = lightPages.includes(pathname);
   const useDarkText  = isLightPage && !scrolled;
 
@@ -37,6 +34,10 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
+
+  // Icon colors that match the rest of the nav
+  const iconColor    = useDarkText ? "#B85C45" : "#9B1B30";
+  const tooltipBg    = useDarkText ? "#2A2218" : "#111827";
 
   return (
     <>
@@ -54,7 +55,7 @@ export default function Navbar() {
           transition: "background-color 0.4s ease",
         }}
       >
-        {/* Monogram — dark on light pages, light on dark pages */}
+        {/* Monogram */}
         <Link href="/" style={{
           fontFamily:     "var(--font-cormorant), Georgia, serif",
           fontSize:       "1.5rem",
@@ -80,20 +81,126 @@ export default function Navbar() {
             </li>
           ))}
 
-          {/* Mail icon */}
-          <li>
+          {/* Mail icon with tooltip */}
+          <li style={{ position: "relative", display: "inline-flex" }}>
             <a
               href="mailto:ashah2@ithaca.edu, aashikashah7@gmail.com"
+              aria-label="Say hello via email"
               style={{
-                color:          useDarkText ? "#B85C45" : "#9B1B30",
+                color:          iconColor,
                 fontSize:       "1rem",
                 textDecoration: "none",
-                cursor:         "none",
+                cursor:         "pointer",
                 transition:     "color 0.3s ease",
+                display:        "inline-flex",
+                alignItems:     "center",
               }}
-              title="Say hello"
+              onMouseEnter={(e) => {
+                const tip = e.currentTarget.querySelector("[data-tooltip]") as HTMLElement;
+                if (tip) tip.style.opacity = "1";
+              }}
+              onMouseLeave={(e) => {
+                const tip = e.currentTarget.querySelector("[data-tooltip]") as HTMLElement;
+                if (tip) tip.style.opacity = "0";
+              }}
             >
-                ✉
+              ✉
+              <span
+                data-tooltip
+                style={{
+                  position: "absolute",
+                  bottom: "calc(100% + 10px)",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  background: tooltipBg,
+                  color: "#FFFFFF",
+                  fontFamily: "var(--font-inter), system-ui, sans-serif",
+                  fontSize: "0.65rem",
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                  padding: "0.35rem 0.7rem",
+                  borderRadius: 6,
+                  whiteSpace: "nowrap",
+                  opacity: 0,
+                  transition: "opacity 0.2s ease",
+                  pointerEvents: "none",
+                }}
+              >
+                Email
+                <span style={{
+                  position: "absolute", top: "100%", left: "50%",
+                  transform: "translateX(-50%)",
+                  borderLeft: "5px solid transparent",
+                  borderRight: "5px solid transparent",
+                  borderTop: `5px solid ${tooltipBg}`,
+                }} />
+              </span>
+            </a>
+          </li>
+
+          {/* LinkedIn icon with tooltip */}
+          <li style={{ position: "relative", display: "inline-flex" }}>
+            <a
+              href="https://www.linkedin.com/in/aashikajdshah"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Let's connect on LinkedIn"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                cursor: "pointer",
+                transition: "color 0.3s ease",
+              }}
+              onMouseEnter={(e) => {
+                const tip = e.currentTarget.querySelector("[data-tooltip]") as HTMLElement;
+                if (tip) tip.style.opacity = "1";
+              }}
+              onMouseLeave={(e) => {
+                const tip = e.currentTarget.querySelector("[data-tooltip]") as HTMLElement;
+                if (tip) tip.style.opacity = "0";
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width={16}
+                height={16}
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                style={{ color: iconColor, transition: "color 0.3s ease" }}
+              >
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+              </svg>
+
+              <span
+                data-tooltip
+                style={{
+                  position: "absolute",
+                  bottom: "calc(100% + 10px)",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  background: tooltipBg,
+                  color: "#FFFFFF",
+                  fontFamily: "var(--font-inter), system-ui, sans-serif",
+                  fontSize: "0.65rem",
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                  padding: "0.35rem 0.7rem",
+                  borderRadius: 6,
+                  whiteSpace: "nowrap",
+                  opacity: 0,
+                  transition: "opacity 0.2s ease",
+                  pointerEvents: "none",
+                }}
+              >
+                Let&apos;s connect on LinkedIn
+                <span style={{
+                  position: "absolute", top: "100%", left: "50%",
+                  transform: "translateX(-50%)",
+                  borderLeft: "5px solid transparent",
+                  borderRight: "5px solid transparent",
+                  borderTop: `5px solid ${tooltipBg}`,
+                }} />
+              </span>
             </a>
           </li>
         </ul>
@@ -102,7 +209,7 @@ export default function Navbar() {
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="md:hidden flex flex-col gap-[5px] p-2"
-          style={{ background: "none", border: "none", cursor: "none" }}
+          style={{ background: "none", border: "none", cursor: "pointer" }}
         >
           {[0, 1, 2].map((i) => (
             <motion.span
@@ -123,7 +230,7 @@ export default function Navbar() {
         </button>
       </motion.nav>
 
-      {/* Mobile menu — fixed invisible text bug (was #F9F6F2 on #F9F6F2) */}
+      {/* Mobile menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -133,7 +240,7 @@ export default function Navbar() {
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="fixed inset-0 z-[99] flex flex-col
                        items-center justify-center md:hidden"
-            style={{ backgroundColor: "#1A1010" }}  // dark bg so text is always visible
+            style={{ backgroundColor: "#1A1010" }}
           >
             <ul className="flex flex-col items-center gap-10 list-none p-0">
               {navLinks.map((link, i) => (
@@ -159,6 +266,39 @@ export default function Navbar() {
                 </motion.li>
               ))}
             </ul>
+
+            {/* Mobile social icons */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.35 }}
+              style={{
+                display: "flex", gap: "1.5rem",
+                marginTop: "2.5rem", alignItems: "center",
+              }}
+            >
+              <a
+                href="mailto:ashah2@ithaca.edu, aashikashah7@gmail.com"
+                style={{ color: "#B85C45", fontSize: "1.2rem", textDecoration: "none" }}
+              >
+                ✉
+              </a>
+              <a
+                href="https://www.linkedin.com/in/aashikajdshah"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: "inline-flex" }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width={20} height={20}
+                  viewBox="0 0 24 24"
+                  fill="#B85C45"
+                >
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                </svg>
+              </a>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -174,11 +314,8 @@ function NavLink({
 }) {
   const [hovered, setHovered] = useState(false);
 
-  // Color logic:
-  // Light page (not scrolled) → dark brown inactive, terracotta active
-  // Dark page or scrolled     → near-white inactive, crimson active
-  const inactiveColor = useDarkText ? "#2A2218"  : "#F9F6F2";
-  const activeColor   = useDarkText ? "#B85C45"  : "#9B1B30";
+  const inactiveColor  = useDarkText ? "#2A2218" : "#F9F6F2";
+  const activeColor    = useDarkText ? "#B85C45" : "#9B1B30";
   const underlineColor = useDarkText ? "#B85C45" : "#9B1B30";
 
   return (

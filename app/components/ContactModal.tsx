@@ -232,7 +232,7 @@ export default function ContactModal() {
                     <textarea
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      placeholder="What's on your mind?"
+                      placeholder="Thank you for visiting my website today! Please leave a message here."
                       rows={4}
                       required
                       style={{

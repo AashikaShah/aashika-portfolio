@@ -38,57 +38,81 @@ function Blob({ top, left, right, bottom, size = 320 }: {
 
 /* ── PHOTO PLACEHOLDER ───────────────────────────────────── */
 function Photo({
-  label, w = "100%", h = 200, rotate = 0, accent = "#C4B8D8", isPolaroid = false,
+  label,
+  w = "100%",
+  h = 200,
+  rotate = 0,
+  accent = "#C4B8D8",
+  isPolaroid = false,
+  src = "",
 }: {
-  label: string; w?: string | number; h?: number;
-  rotate?: number; accent?: string; isPolaroid?: boolean;
+  label: string;
+  w?: string | number;
+  h?: number;
+  rotate?: number;
+  accent?: string;
+  isPolaroid?: boolean;
+  src?: string;
 }) {
   if (isPolaroid) {
     return (
-      <div style={{
-        background:   "#fff",
-        padding:      "10px 10px 44px",
-        boxShadow:    "0 4px 18px rgba(0,0,0,0.13)",
-        borderRadius:  4,
-        transform:    `rotate(${rotate}deg)`,
-        width:         w,
-        flexShrink:    0,
-        display:      "inline-block",
-      }}>
-        <div style={{
-          width: "100%", height: h,
-          background: `${accent}22`,
-          border: `1px dashed ${accent}88`,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          borderRadius: 2,
-        }}>
-          <span style={{
-            fontSize: "0.58rem", color: accent, opacity: 0.7,
-            letterSpacing: "0.15em", textTransform: "uppercase", textAlign: "center", padding: "0 0.5rem",
-          }}>
-            {label}
-          </span>
+      <div
+        style={{
+          transform: `rotate(${rotate}deg)`,
+          background: "#fff",
+          padding: "10px 10px 40px 10px",
+          boxShadow: "2px 4px 12px rgba(0,0,0,0.15)",
+          display: "inline-block",
+        }}
+      >
+        <div
+          style={{
+            width: w,
+            height: h,
+            background: accent + "33",
+            overflow: "hidden",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {src ? (
+            <img
+              src={src}
+              alt={label}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          ) : (
+            <span style={{ fontSize: 12, color: "#aaa" }}>{label}</span>
+          )}
         </div>
       </div>
     );
   }
+
   return (
-    <div style={{
-      width: w, height:h,
-      background: `${accent}18`,
-      border: `1px dashed ${accent}70`,
-      borderRadius: 12,
-      display: "flex", alignItems: "center", justifyContent: "center",
-      flexShrink: 0,
-      transform: rotate ? `rotate(${rotate}deg)` : undefined,
-    }}>
-      <span style={{
-        fontSize: "0.58rem", color: accent, opacity: 0.7,
-        letterSpacing: "0.15em", textTransform: "uppercase",
-        textAlign: "center", padding: "0 0.5rem",
-      }}>
-        {label}
-      </span>
+    <div
+      style={{
+        width: w,
+        height: h,
+        background: accent + "22",
+        borderRadius: 12,
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        transform: `rotate(${rotate}deg)`,
+      }}
+    >
+      {src ? (
+        <img
+          src={src}
+          alt={label}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        />
+      ) : (
+        <span style={{ fontSize: 12, color: "#aaa" }}>{label}</span>
+      )}
     </div>
   );
 }
@@ -213,7 +237,7 @@ export default function BoldPage() {
             <span style={{ color: "#A87EC8" }}>BOLD Leadership Scholar</span>
           </h1>
           <div style={{ maxWidth: 520, margin: "0 auto" }}>
-            <Photo label="Cayuga Lake · hero photo" h={340} accent="#C4B8D8" />
+            <Photo label="boldhero.jpg" h={320} src="/images/bold/boldhero.JPG" />
           </div>
         </motion.div>
       </section>
@@ -245,349 +269,246 @@ export default function BoldPage() {
         </FadeUp>
       </section>
 
-      {/* ── 3. VALUES ───────────────────────────────────── */}
+      {/* ── 3. YEAR 1 REFLECTION ─────────────────────── */}
       <section style={{
-        padding: "6rem 2rem", background: "#F7F3FA",
+        padding: "5rem 2rem", background: "#F7F3FA",
         position: "relative", overflow: "hidden",
       }}>
-        <Blob top="-40px" left="-60px" size={360} />
-        <Blob bottom="-40px" right="-60px" size={280} />
+        <Blob top="-40px" left="-60px" size={300} />
 
         <div className="max-w-[1060px] mx-auto" style={{ position: "relative", zIndex: 1 }}>
-          <div className="values-grid" style={{
-            display: "grid", gridTemplateColumns: "1fr 1fr",
-            gap: "2rem", alignItems: "start",
+
+          {/* Section label */}
+          <FadeUp>
+            <p style={{
+              fontFamily: "var(--font-inter), system-ui, sans-serif",
+              fontSize: "0.58rem", letterSpacing: "0.46em",
+              textTransform: "uppercase", color: "#A87EC8",
+              marginBottom: "0.75rem",
+            }}>
+              Year 1 Reflection
+            </p>
+          </FadeUp>
+
+          <div className="reflection-grid" style={{
+            display: "grid", gridTemplateColumns: "1.5fr 1fr",
+            gap: "3rem", alignItems: "start", marginTop: "0.5rem",
           }}>
-            {/* LEFT — quote + mind map */}
-            <FadeUp>
-              <blockquote style={{
-                fontFamily: "var(--font-cormorant), Georgia, serif",
-                fontSize: "clamp(1.6rem, 3vw, 2.8rem)", fontWeight: 400,
-                color: "#1A1A2A", lineHeight: 1.25,
-                margin: "0 0 2rem 0",
-              }}>
-                "you don't need all the answers right now, just focus on
-                doing your best where you are"
-              </blockquote>
-              <Photo label="Values mind map · Belief · Empathy · Self · Harmony · Assurance · Intellection" h={240} accent="#C4D4A8" />
-            </FadeUp>
 
-            {/* RIGHT — film strip + selfie + honor your strength */}
-            <FadeUp delay={0.12}>
-              <FilmStrip label="BOLD cohort photo" />
-              <div style={{ marginTop: "1.2rem" }}>
-                <Photo label="Selfie · BOLD event" h={160} accent="#D4A8B8" rotate={1.5} />
-              </div>
-              <h2 style={{
-                fontFamily: "var(--font-cormorant), Georgia, serif",
-                fontSize: "clamp(2.5rem, 5vw, 4.5rem)", fontWeight: 700,
-                color: "#1A1A2A", letterSpacing: "-0.02em",
-                lineHeight: 0.95, marginTop: "1.5rem",
-              }}>
-                honor your<br />strength
-              </h2>
-            </FadeUp>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 4. PITCH WORKSHOP ───────────────────────────── */}
-      <section style={{
-        padding: "6rem 2rem", background: "#EDE8F5",
-        position: "relative", overflow: "hidden",
-      }}>
-        <Blob bottom="-40px" right="-60px" size={300} />
-
-        <div className="max-w-[1060px] mx-auto" style={{ position: "relative", zIndex: 1 }}>
-          <div className="pitch-grid" style={{
-            display: "grid", gridTemplateColumns: "1fr 1fr",
-            gap: "3rem", alignItems: "center",
-          }}>
+            {/* LEFT — text */}
             <FadeUp>
               <h2 style={{
                 fontFamily: "var(--font-cormorant), Georgia, serif",
-                fontSize: "clamp(2rem, 4vw, 3.8rem)", fontWeight: 400,
-                color: "#1A1A2A", letterSpacing: "-0.02em", lineHeight: 1.15,
+                fontSize: "clamp(1.7rem, 3vw, 2.6rem)", fontWeight: 300,
+                color: "#1A1A2A", lineHeight: 1.05,
+                letterSpacing: "-0.02em", marginBottom: "1.6rem",
               }}>
-                Pitch yourself<br />
-                <em>AND</em><br />
-                pitch yourself<br />
-                with purpose
+                Showing up, learning to lead,<br />and finding my voice.
               </h2>
-            </FadeUp>
 
-            <FadeUp delay={0.12}>
+              <p style={{
+                fontFamily: "var(--font-inter), system-ui, sans-serif",
+                fontSize: "0.93rem", lineHeight: 1.82,
+                color: "rgba(26,26,42,0.72)", marginBottom: "1.2rem",
+              }}>
+                The Friday workshops reshaped how I think about leadership. Learning to
+                pitch with purpose, navigate difficult conversations, and lead with
+                intention gave me language for things I had felt but couldn't articulate.
+                Each session pushed me to be more deliberate — about how I show up,
+                how I communicate, and what kind of leader I want to become.
+              </p>
+
+              {/* Pull quote */}
               <div style={{
-                border: "3px solid #87CEEB", borderRadius: 14,
-                padding: 10, background: "#fff",
+                borderLeft: "3px solid #C4B8D8",
+                paddingLeft: "1.1rem",
+                margin: "1.4rem 0",
               }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                  <Photo label="Workshop photo 1" h={280} accent="#A8C4D4" />
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    <Photo label="Workshop photo 2" h={135} accent="#A8C4D4" />
-                    <Photo label="Workshop photo 3" h={135} accent="#A8C4D4" />
-                  </div>
-                </div>
+                <p style={{
+                  fontFamily: "var(--font-cormorant), Georgia, serif",
+                  fontSize: "clamp(1.1rem, 1.8vw, 1.35rem)",
+                  fontStyle: "italic", lineHeight: 1.65,
+                  color: "#A87EC8",
+                }}>
+                  "you don't need all the answers right now — just focus on
+                  doing your best where you are."
+                </p>
+              </div>
+
+              <p style={{
+                fontFamily: "var(--font-inter), system-ui, sans-serif",
+                fontSize: "0.93rem", lineHeight: 1.82,
+                color: "rgba(26,26,42,0.72)",
+              }}>
+                This year I carried those lessons into action — building AI tools for
+                faculty, developing safety training that reached over 100 students,
+                and showing up as a researcher, a collaborator, and a scholar in spaces
+                that asked me to grow.
+              </p>
+            </FadeUp>
+
+            {/* RIGHT — photo column
+                ═══════════════════════════════════════════════
+                ADD PHOTOS: add a new line to the array below.
+                  src  – path under /public, e.g. "/images/bold/event.jpg"
+                  rotate – tilt in degrees, e.g. -1.5, 1.2, 0
+                Leave src as "" to keep a dashed placeholder slot.
+                Photos display at their natural size — no cropping.
+                Add as many entries as you like.
+                ═══════════════════════════════════════════════ */}
+            <FadeUp delay={0.1}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
+                {(
+                  [
+                    { rotate: -1.5, src: "/images/bold/bold-cohort2027.jpeg" },
+                    { rotate:  1.2, src: "" },
+                    { rotate: -0.8, src: "" },
+                    /* ← add more lines here, e.g.:
+                    { rotate:  1.0, src: "/images/bold/photo4.jpg" },
+                    { rotate: -1.2, src: "/images/bold/photo5.jpg" },
+                    */
+                  ] as { rotate: number; src: string }[]
+                ).map((p, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 14 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-5%" }}
+                    transition={{
+                      duration: 0.7,
+                      ease: [0.22, 1, 0.36, 1],
+                      delay: (i % 3) * 0.08,
+                    }}
+                    style={{
+                      transform: `rotate(${p.rotate}deg) translateX(${i % 2 === 0 ? 4 : -4}px)`,
+                      borderRadius: 10,
+                      overflow: "hidden",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {p.src ? (
+                      /* Real photo — natural size, no cropping */
+                      <img
+                        src={p.src}
+                        alt={`Reflection photo ${i + 1}`}
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          height: "auto",
+                          borderRadius: 10,
+                        }}
+                      />
+                    ) : (
+                      /* Placeholder — remove once src is set */
+                      <div style={{
+                        height: 160,
+                        border: "1px dashed rgba(26,26,42,0.15)",
+                        borderRadius: 10,
+                        background: "rgba(196,184,216,0.08)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                      }}>
+                        <span style={{
+                          fontFamily: "var(--font-inter), system-ui, sans-serif",
+                          fontSize: "0.9rem", color: "rgba(26,26,42,0.18)",
+                        }}>+</span>
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
               </div>
             </FadeUp>
+
           </div>
         </div>
       </section>
 
-      {/* ── 5. VALUES TREE ──────────────────────────────── */}
+      {/* ── 4. THANK YOU ────────────────────────────────── */}
+      {/*
+        ═══════════════════════════════════════════════════
+        HOW TO ADD PHOTOS
+        ═══════════════════════════════════════════════════
+
+        POLAROID photos (mentor cards):
+          Find the <Photo ... isPolaroid /> components below.
+          Add  src="/images/bold/filename.jpg"  to any of them.
+          Example:
+            <Photo
+              label="Prof. Te-Wen Lo"
+              src="/images/bold/tewenlo.jpg"   ← add this line
+              w={160} h={200} rotate={-2} accent="#D4A8B8" isPolaroid
+            />
+          → Place your image files in /public/images/bold/
+
+        PLAIN photo placeholders (reflection section above):
+          Those use inline <div> boxes — to swap in a real image,
+          replace the <div style={{ height: p.h, border: "1px dashed..." }}>
+          block with:
+            <img
+              src="/images/bold/yourfile.jpg"
+              alt="description"
+              style={{ width:"100%", height: p.h, objectFit:"cover", borderRadius:10 }}
+            />
+        ═══════════════════════════════════════════════════
+      */}
       <section style={{
-        padding: "6rem 2rem", background: "#F7F3FA",
+        padding: "5rem 2rem 7rem", background: "#EDE8F5",
         position: "relative", overflow: "hidden",
       }}>
         <Blob top="-40px" left="-60px" size={260} />
-        <Blob bottom="-40px" right="-60px" size={240} />
+        <Blob bottom="-40px" right="-60px" size={220} />
 
-        <div className="max-w-[1060px] mx-auto" style={{ position: "relative", zIndex: 1 }}>
-          <div className="tree-grid" style={{
-            display: "grid", gridTemplateColumns: "1fr 1fr",
-            gap: "2rem", alignItems: "start",
-          }}>
-            <FadeUp>
-              <Photo label="Workshop classroom · values session" h={360} accent="#C4B8D8" />
-            </FadeUp>
-            <FadeUp delay={0.12}>
-              <Photo label="Hand-drawn values tree" h={420} accent="#C4D4A8" />
-            </FadeUp>
-          </div>
-        </div>
-      </section>
+        <div className="max-w-[860px] mx-auto" style={{
+          position: "relative", zIndex: 1, textAlign: "center",
+        }}>
 
-      {/* ── 6. LEADERSHIP WORKS ─────────────────────────── */}
-      <section style={{
-        padding: "6rem 2rem", background: "#EDE8F5",
-        position: "relative", overflow: "hidden",
-      }}>
-        <Blob top="-60px" left="-80px" size={300} />
-        <Blob bottom="-60px" right="-80px" size={280} />
-
-        <div className="max-w-[1060px] mx-auto" style={{ position: "relative", zIndex: 1 }}>
-
-          {/* PERSISTENCE + title + CONFIDENCE */}
-          <div style={{
-            display: "flex", justifyContent: "space-between",
-            alignItems: "center", marginBottom: "2.5rem", flexWrap: "wrap", gap: "1rem",
-          }}>
-            <div style={{
-              fontFamily: "var(--font-inter), system-ui, sans-serif",
-              fontSize: "clamp(1.2rem, 2.5vw, 2rem)", fontWeight: 900,
-              color: "#5BC8C8", letterSpacing: "0.08em",
-              textTransform: "uppercase", transform: "rotate(-5deg)",
-              textShadow: "2px 2px 0 rgba(91,200,200,0.3)",
-            }}>
-              PERSISTENCE
-            </div>
-
-            <FadeUp>
-              <h2 style={{
-                fontFamily: "var(--font-cormorant), Georgia, serif",
-                fontSize: "clamp(1.8rem, 3.5vw, 3rem)", fontWeight: 300,
-                color: "#1A1A2A", textAlign: "center",
-              }}>
-                Some Leadership Works
-              </h2>
-            </FadeUp>
-
-            <div style={{
-              fontFamily: "var(--font-inter), system-ui, sans-serif",
-              fontSize: "clamp(1.2rem, 2.5vw, 2rem)", fontWeight: 900,
-              color: "#5BC8C8", letterSpacing: "0.08em",
-              textTransform: "uppercase", transform: "rotate(4deg)",
-              textShadow: "2px 2px 0 rgba(91,200,200,0.3)",
-            }}>
-              CONFIDENCE
-            </div>
-          </div>
-
-          {/* 3 paper-clip cards */}
+          {/* Label */}
           <FadeUp>
-            <div className="works-grid" style={{
-              display: "grid", gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "2rem", marginBottom: "2.5rem",
-            }}>
-              <WorkCard
-                title="Radiation Safety Modules"
-                subtitle="For Chemistry Department (School of H&S)"
-                symbol="☢️"
-                topColor="#E8A060"
-                rotate={-1.5}
-              />
-              <WorkCard
-                title="MTD Performance Evaluations GPT"
-                subtitle="For the School of Music, Theatre and Dance"
-                symbol="🤖"
-                topColor="#A8C4D4"
-                rotate={1}
-              />
-              <WorkCard
-                title="HAL Biosafety Course"
-                subtitle="For Physical Therapy Department (School of HSHP)"
-                symbol="⚗️"
-                topColor="#A87EC8"
-                rotate={-0.5}
-              />
-            </div>
-          </FadeUp>
-
-          {/* CRITICAL THINKING */}
-          <FadeUp delay={0.1}>
             <p style={{
-              fontFamily: "var(--font-cormorant), Georgia, serif",
-              fontSize: "clamp(2.5rem, 6vw, 5.5rem)", fontWeight: 700,
-              color: "#F2C44A", textAlign: "center",
-              letterSpacing: "0.1em", lineHeight: 1,
-              textShadow: "0 0 30px rgba(242,196,74,0.35), 0 2px 0 rgba(200,150,0,0.2)",
+              fontFamily: "var(--font-inter), system-ui, sans-serif",
+              fontSize: "0.58rem", letterSpacing: "0.46em",
+              textTransform: "uppercase", color: "#A87EC8",
+              marginBottom: "0.75rem",
             }}>
-              CRITICAL THINKING
+              Acknowledgements
             </p>
-          </FadeUp>
-        </div>
-      </section>
-
-      {/* ── 7. LEADERSHIP DEVELOPMENT ───────────────────── */}
-      <section style={{
-        padding: "6rem 2rem", background: "#F7F3FA",
-        position: "relative", overflow: "hidden",
-      }}>
-        <Blob top="-40px" right="-60px" size={260} />
-
-        <div className="max-w-[1060px] mx-auto" style={{ position: "relative", zIndex: 1 }}>
-          <FadeUp>
             <h2 style={{
               fontFamily: "var(--font-cormorant), Georgia, serif",
-              fontSize: "clamp(2rem, 3.5vw, 3rem)", fontWeight: 300,
+              fontSize: "clamp(2rem, 4vw, 3.2rem)", fontWeight: 300,
               color: "#1A1A2A", letterSpacing: "-0.02em",
-              marginBottom: "2.5rem",
+              lineHeight: 1.05, marginBottom: "3rem",
             }}>
-              For Leadership Development
+              Thank you.
             </h2>
           </FadeUp>
 
-          {/* SLI + research poster grid */}
-          <FadeUp delay={0.08}>
-            <div className="dev-grid" style={{
-              display: "grid", gridTemplateColumns: "1fr 2fr",
-              gap: "1.5rem", alignItems: "start", marginBottom: "2rem",
-            }}>
-              {/* SLI slide */}
-              <div style={{
-                background: "#F2C44A", borderRadius: 14,
-                padding: "2rem", minHeight: 220,
-                display: "flex", flexDirection: "column", justifyContent: "center",
-              }}>
-                <p style={{
-                  fontFamily: "var(--font-inter), system-ui, sans-serif",
-                  fontSize: "0.7rem", letterSpacing: "0.4em",
-                  textTransform: "uppercase", color: "rgba(26,26,42,0.55)",
-                  marginBottom: "0.75rem",
-                }}>
-                  sli · is for everyone
-                </p>
-                <h3 style={{
-                  fontFamily: "var(--font-cormorant), Georgia, serif",
-                  fontSize: "clamp(1.4rem, 2.5vw, 2.2rem)", fontWeight: 700,
-                  color: "#1A1A2A", lineHeight: 1.1,
-                }}>
-                  LEADING IN A DIVERSE WORLD
-                </h3>
-              </div>
-
-              {/* 4 poster photos */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
-                <Photo label="Aashika · research poster" h={150} accent="#D4A8B8" />
-                <Photo label="Research poster · full view" h={150} accent="#D4A8B8" />
-                <Photo label="Aashika · certificate" h={150} accent="#A8C4D4" />
-                <Photo label="Aashika + Prof. Melcher · poster" h={150} accent="#C4D4A8" />
-              </div>
-            </div>
-          </FadeUp>
-
-          {/* Research flyer card */}
-          <FadeUp delay={0.14}>
-            <div style={{
-              background: "#2A3A42", borderRadius: 18,
-              padding: "2rem",
-              display: "grid", gridTemplateColumns: "3fr 1fr",
-              gap: "1.5rem", alignItems: "center",
-            }}>
-              <div>
-                <p style={{
-                  fontFamily: "var(--font-inter), system-ui, sans-serif",
-                  fontSize: "0.6rem", letterSpacing: "0.3em",
-                  textTransform: "uppercase", color: "#5BC8C8",
-                  marginBottom: "0.75rem",
-                }}>
-                  Junior 302 Research · Fall 2025 · Monday @ 4:15 pm
-                </p>
-                <h3 style={{
-                  fontFamily: "var(--font-cormorant), Georgia, serif",
-                  fontSize: "clamp(1.3rem, 2vw, 2rem)", fontWeight: 300,
-                  color: "#F7F3FA", lineHeight: 1.3, marginBottom: "1rem",
-                }}>
-                  Impact of <strong>rapid freezing</strong> on{" "}
-                  <em>Dicranum scoparium</em>{" "}
-                  in South Hill
-                </h3>
-                <p style={{
-                  fontFamily: "var(--font-inter), system-ui, sans-serif",
-                  fontSize: "0.75rem", color: "rgba(247,243,250,0.65)",
-                  lineHeight: 1.8,
-                }}>
-                  Student: Aashika Shah<br />
-                  Research Advisor: Peter Melcher<br />
-                  Ithaca College · Melcher Lab, Plant Biology Research
-                </p>
-              </div>
-              <Photo label="Field site · South Hill" h={200} accent="#5BC8C8" />
-            </div>
-          </FadeUp>
-        </div>
-      </section>
-
-      {/* ── 8. MENTORS ──────────────────────────────────── */}
-      <section style={{
-        padding: "6rem 2rem 8rem", background: "#EDE8F5",
-        position: "relative", overflow: "hidden",
-      }}>
-        <Blob top="-40px" left="-60px" size={280} />
-        <Blob bottom="-60px" right="-80px" size={320} />
-
-        <div className="max-w-[900px] mx-auto" style={{
-          position: "relative", zIndex: 1, textAlign: "center",
-        }}>
-          {/* Very thankful */}
-          <FadeUp>
+          {/* Mentor + sponsor polaroids */}
+          <FadeUp delay={0.06}>
             <p style={{
-              fontFamily: "var(--font-cormorant), Georgia, serif",
-              fontSize: "clamp(1.4rem, 2.5vw, 2.2rem)", fontWeight: 300,
-              color: "#1A1A2A", marginBottom: "2.5rem", lineHeight: 1.5,
+              fontFamily: "var(--font-inter), system-ui, sans-serif",
+              fontSize: "0.6rem", letterSpacing: "0.28em",
+              textTransform: "uppercase", color: "rgba(26,26,42,0.4)",
+              marginBottom: "1.6rem",
             }}>
-              Very thankful to my mentor and sponsor
+              Mentor &amp; Sponsor
             </p>
-          </FadeUp>
-
-          {/* Te-Wen Lo + Elizabeth Reilly */}
-          <FadeUp delay={0.08}>
             <div style={{
               display: "flex", justifyContent: "center",
-              gap: "4rem", flexWrap: "wrap", marginBottom: "2rem",
+              gap: "3rem", flexWrap: "wrap", marginBottom: "1rem",
             }}>
               {[
-                { name: "Prof. Te-Wen Lo", rotate: -2, accent: "#D4A8B8" },
-                { name: "Elizabeth Reilly", rotate: 2, accent: "#A8C4D4" },
+                { name: "Prof. Te-Wen Lo",   rotate: -2,  accent: "#D4A8B8" },
+                { name: "Elizabeth Reilly",  rotate:  2,  accent: "#A8C4D4" },
               ].map((m) => (
                 <div key={m.name} style={{ textAlign: "center" }}>
+                  {/* ← add src="/images/bold/yourfile.jpg" below to show a real photo */}
                   <Photo
-                    label={m.name} w={180} h={220}
+                    label={m.name} w={160} h={200}
                     rotate={m.rotate} accent={m.accent} isPolaroid
                   />
                   <p style={{
-                    fontFamily: "Georgia, serif", fontStyle: "italic",
-                    fontSize: "1.15rem", color: "#1A1A2A", marginTop: "0.75rem",
+                    fontFamily: "var(--font-cormorant), Georgia, serif",
+                    fontStyle: "italic", fontSize: "1.05rem",
+                    color: "#1A1A2A", marginTop: "0.6rem",
                   }}>
                     {m.name}
                   </p>
@@ -596,89 +517,99 @@ export default function BoldPage() {
             </div>
           </FadeUp>
 
-          {/* For their time */}
-          <FadeUp delay={0.14}>
-            <p style={{
-              fontFamily: "var(--font-cormorant), Georgia, serif",
-              fontSize: "clamp(1.4rem, 2.5vw, 2.2rem)", fontWeight: 400,
-              color: "#1A1A2A", marginBottom: "3rem",
-            }}>
-              For their time, insights and opportunities!
-            </p>
+          {/* Divider */}
+          <FadeUp delay={0.1}>
+            <div style={{
+              width: 40, height: 1,
+              background: "rgba(168,126,200,0.35)",
+              margin: "2rem auto",
+            }} />
           </FadeUp>
 
-          {/* Also very thankful to */}
-          <FadeUp delay={0.18}>
+          {/* Also thankful row */}
+          <FadeUp delay={0.14}>
             <p style={{
               fontFamily: "var(--font-inter), system-ui, sans-serif",
-              fontSize: "0.65rem", letterSpacing: "0.25em",
-              textTransform: "uppercase", color: "rgba(26,26,42,0.55)",
-              marginBottom: "1.5rem", textAlign: "left",
+              fontSize: "0.6rem", letterSpacing: "0.28em",
+              textTransform: "uppercase", color: "rgba(26,26,42,0.4)",
+              marginBottom: "1.6rem",
             }}>
-              Also very thankful to:
+              Also very thankful to
             </p>
-
             <div style={{
               display: "flex", justifyContent: "center",
               gap: "3rem", flexWrap: "wrap",
               alignItems: "flex-end", marginBottom: "2rem",
             }}>
-              {/* Mish Lenhart polaroid */}
+              {/* ← add src="/images/bold/mishlenhart.jpg" below */}
               <div style={{ textAlign: "center" }}>
                 <Photo
-                  label="Mish Lenhart" w={180} h={220}
+                  label="Mish Lenhart" w={160} h={200}
                   rotate={-1.5} accent="#C4D4A8" isPolaroid
                 />
                 <p style={{
-                  fontFamily: "Georgia, serif", fontStyle: "italic",
-                  fontSize: "1.15rem", color: "#1A1A2A", marginTop: "0.75rem",
+                  fontFamily: "var(--font-cormorant), Georgia, serif",
+                  fontStyle: "italic", fontSize: "1.05rem",
+                  color: "#1A1A2A", marginTop: "0.6rem",
                 }}>
                   Mish Lenhart
                 </p>
               </div>
 
-              {/* BOLD logo */}
+              {/* BOLD tile */}
               <div style={{
                 background: "#C4B8E0", borderRadius: 14,
-                width: 200, height: 200,
+                width: 180, height: 180,
                 display: "flex", flexDirection: "column",
                 alignItems: "center", justifyContent: "center",
-                padding: "1.5rem",
+                padding: "1.2rem",
               }}>
                 <p style={{
                   fontFamily: "var(--font-cormorant), Georgia, serif",
-                  fontSize: "2.5rem", fontWeight: 900,
-                  color: "#fff", letterSpacing: "0.05em",
-                  marginBottom: "0.25rem",
+                  fontSize: "2.2rem", fontWeight: 900,
+                  color: "#fff", letterSpacing: "0.05em", marginBottom: "0.2rem",
                 }}>
                   BOLD
                 </p>
                 <p style={{
                   fontFamily: "var(--font-inter), system-ui, sans-serif",
-                  fontSize: "0.52rem", letterSpacing: "0.18em",
+                  fontSize: "0.48rem", letterSpacing: "0.16em",
                   textTransform: "uppercase", color: "rgba(255,255,255,0.75)",
-                  textAlign: "center", lineHeight: 1.4,
+                  textAlign: "center", lineHeight: 1.5,
                 }}>
-                  Women's Leadership Network
+                  Women's<br />Leadership Network
                 </p>
               </div>
             </div>
+          </FadeUp>
 
+          {/* Closing line */}
+          <FadeUp delay={0.18}>
             <p style={{
               fontFamily: "var(--font-cormorant), Georgia, serif",
-              fontSize: "clamp(1.2rem, 2vw, 1.8rem)", fontWeight: 300,
-              color: "rgba(26,26,42,0.6)", fontStyle: "italic",
+              fontSize: "clamp(1.1rem, 1.8vw, 1.5rem)", fontWeight: 300,
+              color: "rgba(26,26,42,0.55)", fontStyle: "italic",
+              marginBottom: "3rem",
             }}>
               & everybody involved in the program!
             </p>
+
+            {/* Final stamp */}
+            <p style={{
+              fontFamily: "var(--font-inter), system-ui, sans-serif",
+              fontSize: "0.56rem", letterSpacing: "0.38em",
+              textTransform: "uppercase", color: "rgba(26,26,42,0.28)",
+            }}>
+              Aashika Shah · BOLD Leadership Scholar · Year 1
+            </p>
           </FadeUp>
+
         </div>
       </section>
 
       <style jsx>{`
         @media (max-width: 760px) {
-          .values-grid, .pitch-grid, .tree-grid,
-          .works-grid, .dev-grid {
+          .reflection-grid {
             grid-template-columns: 1fr !important;
           }
         }
