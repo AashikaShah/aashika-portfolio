@@ -80,7 +80,7 @@ const LABS: ActiveLab[] = [
   /* ── Woods Lab ─ Summer 2026 - H&S Summer Scholar ──────────────────────────── */
   {
     id:     "woods",
-    lab:    "Woods Lab",
+    lab:    "Woods Lab (H&S Summer Scholar)",
     pi:     "Prof. Ian Woods",
     period: "Summer 2026",
     status: "completed",
@@ -89,15 +89,13 @@ const LABS: ActiveLab[] = [
     pageBg: "#0F0C07",
     focus: (
       <>
-        How do tardigrades walk? In the Woods Lab I am studying the gait
-        and locomotion of tardigrades — mapping how these eight-legged
-        microscopic animals coordinate their legs during forward movement,
-        and how environmental cues such as light gradients and chemical
-        attractants alter their locomotor strategy.
+        How do tardigrades walk? In the Woods Lab I found tardigrades 
+        for behavioral studies, specifically the gait/locomotion of tardigrades — mapping how these eight-legged
+        microscopic animals coordinate their legs during forward movement.
       </>
     ),
     finding:
-      "Tardigrades exhibit a surprisingly consistent alternating-leg gait, with measurable shifts in stepping sequence observable under aversive stimuli.",
+      "Gait analysis in progress. Manuscript in preparation for submission to Journal of Visualized Experiments (2026).",
     details: [
       "Found and identified tardigrades in NY Finger Lakes region for behavioral studies",
       "Used high-resolution video microscopy to record and track individual tardigrade gait",
@@ -105,7 +103,7 @@ const LABS: ActiveLab[] = [
       "Performed DNA extraction, PCR and analyzed DNA sequencing for genetic identification",
     ],
     methods:
-      "sampling · microscopy · DNA extraction · PCR · gait analysis · image/video tracking",
+      "sampling · microscopy · DNA extraction · PCR · gait analysis · image/video tracking · Python ",
   },
 
   /* ── Melcher Lab ─ Aug 2025 – May 2026 ─────────────────── */
@@ -120,8 +118,8 @@ const LABS: ActiveLab[] = [
     pageBg: "#0A1A18",
     focus: (
       <>
-        How do mosses survive freezing? I studied the physiological and
-        molecular responses of <em>Dicranum scoparium</em> and{" "}
+        How do mosses survive freezing? I studied the physiological
+        responses of <em>Dicranum scoparium</em> and{" "}
         <em>Leucobryum glaucum</em> to freezing stress across two
         contrasting microhabitats on South Hill — comparing cold-stress
         response by location, canopy cover, and treatment severity.
@@ -161,7 +159,7 @@ const LABS: ActiveLab[] = [
     ),
     finding: null,
     details: [
-      "Extracted DNA and ran microsatellite analyses under the direction of the PI",
+      "Extracted DNA and ran microsatellite analyses",
       "Helped compare native and invasive populations using gel electrophoresis",
       "Maintained organised documentation to support sample tracking and repeatable workflows",
     ],
@@ -190,7 +188,7 @@ const POSTERS = [
 
 /* ── Methods cloud ──────────────────────────────────────── */
 const ALL_METHODS = [
-  "video microscopy",
+  "microscopy",
   "gait analysis",
   "phototaxis assays",
   "chemotaxis assays",
@@ -201,7 +199,7 @@ const ALL_METHODS = [
   "gene expression profiling",
   "plant electrical signalling",
   "R statistical analysis",
-  "field data collection",
+  "field data collection and sampling",
   "DNA extraction",
   "microsatellite analysis",
   "gel electrophoresis",

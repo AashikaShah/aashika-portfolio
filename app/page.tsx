@@ -62,23 +62,7 @@ export default function Home() {
           </p>
         </motion.blockquote>
 
-        {/* Crimson line — draws from center */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{
-            duration: 1.2,
-            ease: [0.22, 1, 0.36, 1],
-            delay: 1.6,
-          }}
-          style={{
-            width: 40, height: 1,
-            backgroundColor: "#9B1B30",
-            marginTop: "2.5rem",
-            transformOrigin: "center",
-          }}
-        />
-
+        
         
 
       </div>

@@ -4,7 +4,6 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import React, { useRef } from "react";
 
 /* ---------------------------------- DATA ---------------------------------- */
-
 const coursework = [
   "Neurobiology",
   "Developmental Biology",
@@ -17,14 +16,13 @@ const coursework = [
 ];
 
 const questions = [
-  "How do biological signals become lived experience?",
-  "How does pain change depending on context?",
-  "How do gut-brain pathways shape behavior and perception?",
-  "How can scientific ideas stay accurate as they become accessible?",
+  "The gut-brain axis — I keep reading about it and the more I do, the less settled I think the science actually is.",
+  "How much does gut inflammation actually affect cognition? The data seems messier than the headlines suggest.",
+  "I'm genuinely unsure how the vagus nerve \"decides\" what to send upward. That question hasn't left me.",
+  "Microbiome research feels like it's moving faster than anyone can evaluate it carefully. I find that interesting, not discouraging.",
 ];
 
 /* -------------------------------- COMPONENTS ------------------------------ */
-
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
     <p
@@ -54,8 +52,6 @@ function SectionDivider() {
   );
 }
 
-/* A single question that fades + lifts in as it enters the viewport,
-   with a small terracotta dot in the margin acting as a depth marker. */
 function DepthQuestion({
   question,
   index,
@@ -71,22 +67,21 @@ function DepthQuestion({
       transition={{
         duration: 1.1,
         ease: [0.22, 1, 0.36, 1],
-        delay: index * 0.05,
+        delay: index * 0.06,
       }}
       style={{
         position: "relative",
         paddingLeft: "2.5rem",
-        paddingTop: "1.2rem",
-        paddingBottom: "1.2rem",
+        paddingTop: "1.4rem",
+        paddingBottom: "1.4rem",
       }}
     >
-      {/* depth marker — single dot in left margin */}
       <span
         aria-hidden="true"
         style={{
           position: "absolute",
           left: 0,
-          top: "2.1rem",
+          top: "2.25rem",
           width: 6,
           height: 6,
           borderRadius: "50%",
@@ -97,11 +92,11 @@ function DepthQuestion({
       <p
         style={{
           fontFamily: "var(--font-cormorant), Georgia, serif",
-          fontSize: "clamp(1.35rem, 2vw, 1.7rem)",
-          lineHeight: 1.5,
+          fontSize: "clamp(1.35rem, 2vw, 1.75rem)",
+          lineHeight: 1.55,
           fontWeight: 300,
           color: "rgba(42,34,24,0.88)",
-          letterSpacing: "-0.005em",
+          letterSpacing: "-0.008em",
         }}
       >
         {question}
@@ -111,13 +106,9 @@ function DepthQuestion({
 }
 
 /* ---------------------------------- PAGE ---------------------------------- */
-
 export default function AcademicPage() {
   const questionsRef = useRef<HTMLDivElement>(null);
 
-  // A very subtle scroll-driven progress line that grows down the questions
-  // section's left margin — like a quiet depth gauge. Pure decoration, no
-  // text, no numbers.
   const { scrollYProgress } = useScroll({
     target: questionsRef,
     offset: ["start 80%", "end 30%"],
@@ -166,7 +157,6 @@ export default function AcademicPage() {
               letterSpacing: "-0.02em",
               lineHeight: 1.05,
               maxWidth: "20ch",
-              fontOpticalSizing: "auto",
             }}
           >
             On the academic side.
@@ -251,13 +241,7 @@ export default function AcademicPage() {
               >
                 Ithaca College
               </h2>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.4rem",
-                }}
-              >
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
                 {[
                   "B.S. Biology",
                   "Minor in Neuroscience",
@@ -317,7 +301,6 @@ export default function AcademicPage() {
         </motion.div>
 
         {/* ---------------------------- RESEARCH CTA -------------------------- */}
-      
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -330,7 +313,6 @@ export default function AcademicPage() {
           }}
         >
           <Eyebrow>Research</Eyebrow>
-
           <a
             href="/work/research"
             style={{ textDecoration: "none", display: "inline-block" }}
@@ -348,12 +330,10 @@ export default function AcademicPage() {
                 transition: "transform 0.2s ease",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLDivElement).style.transform =
-                  "scale(1.015)";
+                (e.currentTarget as HTMLDivElement).style.transform = "scale(1.015)";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLDivElement).style.transform =
-                  "scale(1)";
+                (e.currentTarget as HTMLDivElement).style.transform = "scale(1)";
               }}
             >
               <div>
@@ -381,11 +361,7 @@ export default function AcademicPage() {
                 </p>
               </div>
               <span
-                style={{
-                  fontSize: "1.2rem",
-                  color: "#F5F0E8",
-                  opacity: 0.7,
-                }}
+                style={{ fontSize: "1.2rem", color: "#F5F0E8", opacity: 0.7 }}
               >
                 →
               </span>
@@ -411,10 +387,7 @@ export default function AcademicPage() {
               {i < coursework.length - 1 && (
                 <span
                   aria-hidden="true"
-                  style={{
-                    color: "rgba(42,34,24,0.35)",
-                    margin: "0 0.55em",
-                  }}
+                  style={{ color: "rgba(42,34,24,0.35)", margin: "0 0.55em" }}
                 >
                   ·
                 </span>
@@ -423,7 +396,6 @@ export default function AcademicPage() {
           ))}
         </p>
 
-        {/* Liberal arts line — small visual break, italic, framed as deliberate breadth */}
         <p
           style={{
             marginTop: "1.6rem",
@@ -431,25 +403,24 @@ export default function AcademicPage() {
             fontStyle: "italic",
             fontSize: "0.98rem",
             lineHeight: 1.6,
-            color: "rgba(42,34,24,0.55)",
+            color: "rgba(42,34,24,0.5)",
             maxWidth: "52ch",
           }}
         >
-          Also: philosophy, sociology, social psychology, psycholgy of women, etc. 
+          Also: philosophy, sociology, social psychology, psychology of women —
+          the courses that keep reminding me that biology doesn&apos;t happen
+          outside of a person.
         </p>
 
-        {/* ----------------------------- QUESTIONS ---------------------------- */}
+        {/* ----------------------------- INTERESTS ---------------------------- */}
         <SectionDivider />
-        <Eyebrow>Questions I keep returning to</Eyebrow>
+        <Eyebrow>Interests</Eyebrow>
 
         <div
           ref={questionsRef}
-          style={{
-            position: "relative",
-            paddingLeft: "0.5rem",
-          }}
+          style={{ position: "relative", paddingLeft: "0.5rem" }}
         >
-          {/* Scroll-driven depth gauge — quiet vertical line in the margin */}
+          {/* Scroll-driven depth gauge */}
           <div
             aria-hidden="true"
             style={{
@@ -496,7 +467,6 @@ export default function AcademicPage() {
         >
           This page will grow as my questions do.
         </motion.p>
-
         <p
           style={{
             marginTop: "1.4rem",
@@ -507,11 +477,10 @@ export default function AcademicPage() {
             color: "rgba(42,34,24,0.32)",
           }}
         >
-          Last updated · May 2026
+          Last updated · September 2026
         </p>
       </div>
 
-      {/* Responsive + accessibility refinements */}
       <style jsx>{`
         @media (max-width: 760px) {
           .intro-grid {

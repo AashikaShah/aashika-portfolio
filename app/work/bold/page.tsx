@@ -311,8 +311,8 @@ export default function BoldPage() {
                 fontSize: "0.93rem", lineHeight: 1.82,
                 color: "rgba(26,26,42,0.72)", marginBottom: "1.2rem",
               }}>
-                The Friday workshops reshaped how I think about leadership. Learning to
-                pitch with purpose, navigate difficult conversations, and lead with
+                The Friday workshops reshaped how I think about leadership. Weekly workshops focused on
+                learning topitch with purpose, navigate difficult conversations, and lead with
                 intention gave me language for things I had felt but couldn't articulate.
                 Each session pushed me to be more deliberate — about how I show up,
                 how I communicate, and what kind of leader I want to become.
@@ -340,10 +340,7 @@ export default function BoldPage() {
                 fontSize: "0.93rem", lineHeight: 1.82,
                 color: "rgba(26,26,42,0.72)",
               }}>
-                This year I carried those lessons into action — building AI tools for
-                faculty, developing safety training that reached over 100 students,
-                and showing up as a researcher, a collaborator, and a scholar in spaces
-                that asked me to grow.
+                This year, I put those lessons into practice by stepping into new roles as a researcher, collaborator, and scholar. Each experience challenged me in different ways and pushed me to grow beyond what I thought I was capable of.
               </p>
             </FadeUp>
 
@@ -361,8 +358,8 @@ export default function BoldPage() {
                 {(
                   [
                     { rotate: -1.5, src: "/images/bold/bold-cohort2027.jpeg" },
-                    { rotate:  1.2, src: "" },
-                    { rotate: -0.8, src: "" },
+                    { rotate:  1.2, src: "/images/bold/nin.jpg" }
+                    
                     /* ← add more lines here, e.g.:
                     { rotate:  1.0, src: "/images/bold/photo4.jpg" },
                     { rotate: -1.2, src: "/images/bold/photo5.jpg" },
@@ -503,7 +500,8 @@ export default function BoldPage() {
                   {/* ← add src="/images/bold/yourfile.jpg" below to show a real photo */}
                   <Photo
                     label={m.name} w={160} h={200}
-                    rotate={m.rotate} accent={m.accent} isPolaroid
+                    rotate={m.rotate} accent={m.accent}
+                    src="/images/bold/te-wen.jpg"  isPolaroid
                   />
                   <p style={{
                     fontFamily: "var(--font-cormorant), Georgia, serif",

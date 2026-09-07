@@ -12,7 +12,7 @@ const navLinks = [
   { label: "Personal",    href: "/story"    },
 ];
 
-const lightPages = ["/academic", "/work/campus" ,"/work/bold" , "/work/edtech"];
+const lightPages = ["/academic", "/work/campus" ,"/work/bold" , "/work/edtech", "/story"]
 
 export default function Navbar() {
   const [scrolled,    setScrolled]    = useState(false);

@@ -12,11 +12,8 @@ import { motion } from "framer-motion";
      rotate  – tilt in degrees (optional, default 0)
    ══════════════════════════════════════════════════════════ */
 const PHOTOS: { src?: string; alt: string; rotate?: number }[] = [
-  { alt: "Ed Tech workspace", rotate: -1.5 },
-  { alt: "Canvas course design", rotate: 1.2 },
-  { alt: "Instructional media editing", rotate: -0.8 },
-  { alt: "AI agent demo", rotate: 1.5 },
-  { alt: "Faculty collaboration", rotate: -1.0 },
+  { alt: "Ed Tech workspace", rotate: -1.5, src: "/images/edtech/visionpro.jpg" },
+  
 ];
 
 /* ══════════════════════════════════════════════════════════
@@ -26,8 +23,8 @@ const PROJECTS = [
   {
     id: "lab-safety",
     title: "Lab Safety Training Course",
-    org: "Various Departments · Ithaca College",
-    desc: "Developed and maintained lab safety training materials across Canvas LMS for departments spanning the sciences, humanities, and health professions. Responsibilities included building module structures, embedding multimedia content, configuring assessments with rubric alignment, conducting accessibility checks, and supporting faculty with course setup. This work helped create reusable training structures that could be adapted across different lab and instructional contexts.",
+    org: "Department of Environmental Health and Safety · Ithaca College",
+    desc: "Developed and maintained lab safety training materials across Canvas LMS for departments spanning the sciences, humanities, and health professions in collaboration with the Department of Environmental Health and Safety at Ithaca College. Responsibilities included building module structures, producing multimedia content and graphic design, configuring assessments with rubric alignment and conducting accessibility checks, and providing faculty support for course deployment and student onboarding. The course has been successfully implemented across over 200 faculty members and research students, achieving a 99.8% positive response rate.",
     video: "/videos/edtech/lab.mp4",
     accent: "#0C7C7C",
     flipped: false,
@@ -36,7 +33,7 @@ const PROJECTS = [
     id: "anatomy",
     title: "Human Anatomy Lab Biosafety Course",
     org: "Physical Therapy Dept · School of HSHP",
-    desc: "Co-developed a comprehensive biosafety training course for the Human Anatomy Lab, specifically tailored for Physician Assistant students working with cadaveric specimens. Collaborated with the Environmental Health and Safety Department and the School of Health Sciences and Human Performance to support institutional biosafety expectations, lab procedures, and safe learning practices.",
+    desc: "Co-developed a comprehensive biosafety training course for the Human Anatomy Lab, specifically tailored for Physical Therapy students working with cadaveric specimens. Collaborated with the Environmental Health and Safety Department and the School of Health Sciences and Human Performance to support institutional biosafety expectations, lab procedures, and safe learning practices.",
     video: "/videos/edtech/HALlab.mp4",
     accent: "#6B4D8A",
     flipped: true,
@@ -45,25 +42,17 @@ const PROJECTS = [
     id: "radiation",
     title: "Radiation Safety",
     org: "Chemistry Dept · School of H&S",
-    desc: "Designed and deployed a radiation safety training course for the Chemistry Department in collaboration with the Environmental Health and Safety Office. Developed multimedia modules covering proper handling, dosimetry, waste disposal, and emergency protocols. The course supported faculty and research students as part of the onboarding and lab preparation process.",
+    desc: "Designed and deployed a radiation safety training course for the Chemistry Department in collaboration with the Radiation Safety Officer at Ithaca College. Developed multimedia modules covering proper handling, dosimetry, waste disposal, and emergency protocols. The course supported faculty and research students as part of the onboarding and lab preparation process.",
     video: "/videos/edtech/radlab.mp4",
     accent: "#9A5E2A",
     flipped: false,
   },
-  {
-    id: "ai-research",
-    title: "AI Platform Research",
-    org: "Ed Tech Office · Ithaca College",
-    desc: "Conducted an evaluation of AI platforms for possible instructional use, considering pedagogical alignment, privacy, accessibility, Canvas compatibility, cost, scalability, and faculty onboarding needs. The work helped inform conversations around how AI tools could be thoughtfully introduced into teaching and learning contexts.",
-    video: "/videos/edtech/ai-platform-research.mp4",
-    accent: "#3D6B82",
-    flipped: true,
-  },
+  
   {
     id: "mtd-gpt",
-    title: "MTD Performance Evaluations GPT",
+    title: "MTD Performance Evaluations AI Agent",
     org: "School of Music, Theatre & Dance · Ithaca College",
-    desc: "Built a custom AI agent using Claude Code to support faculty with student performance evaluations in the School of Music, Theatre and Dance. The tool was designed to work with rubric criteria, student portfolio material, and structured evaluation drafts, helping streamline a process that had previously required extensive manual writing and formatting.",
+    desc: "Built a custom AI agent using Claude Code to support faculty with student performance evaluations in the School of Music, Theatre and Dance. The tool was designed to work with rubric criteria, student portfolio material, and structured evaluation drafts, helping streamline a process that had previously required extensive manual writing and formatting and a huge amount of time.",
     video: "/videos/edtech/MDALchat.mp4",
     accent: "#0C7C7C",
     flipped: false,
@@ -394,7 +383,7 @@ export default function EdTechPage() {
               marginBottom: "0.9rem",
             }}
           >
-            Ithaca College · IT &amp; Analytics
+            IT &amp; Analytics · Ithaca College 
           </p>
           <h1
             style={{
@@ -486,14 +475,13 @@ export default function EdTechPage() {
                 marginBottom: "1rem",
               }}
             >
-              As an Immersive and Ed Tech Specialist within IT &amp; Analytics
+              As an Immersive and Ed Tech Specialist within IT & Analytics 
               at Ithaca College, I work at the intersection of technology,
-              education, and design. I research and help faculty with various
-              educational technologies — including Canvas LMS and Kaltura —
-              ensuring they have the tools to teach effectively. I build
-              goal-based and utility-based AI agents and GPTs to analyze and
-              manipulate datasets, and produce instructional media with a focus
-              on improving clarity and accessibility.
+              education, and design. I research and support faculty in the use
+              of educational technologies, including Canvas LMS and Kaltura, ensuring 
+              they have the tools and strategies needed to teach effectively. I build 
+              goal-based and utility-based AI agents and GPTs to analyze and manipulate datasets, 
+              and I produce instructional media with a focus on improving clarity, accessibility, and learner engagement.
             </p>
             <p
               style={{
@@ -504,15 +492,12 @@ export default function EdTechPage() {
                 marginBottom: "1rem",
               }}
             >
-              My work spans multiple departments and disciplines. I developed a
-              lab safety course in collaboration with the Environmental Health
-              and Safety Department, which was implemented across over 100
-              faculty members and research students, achieving a 99.8% positive
-              response rate. I have collaborated with the School of Health
-              Sciences and Human Performance to develop a specialized human
-              anatomy lab safety course for the Physician Assistant program, and
-              partnered with the Chemistry Department to develop a Radiation
-              Safety Course.
+              In addition, I collaborate closely with instructional designers 
+              in their faculty consultations and, when needed, provide consulting 
+              services directly to faculty on instructional design, educational technology, 
+              and AI-enhanced teaching practices. I also assist with departmental outreach and 
+              engagement initiatives, including tabling events that promote IT & Analytics services, 
+              resources, and programs to the broader campus community.
             </p>
             <p
               style={{
@@ -523,7 +508,7 @@ export default function EdTechPage() {
                 margin: 0,
               }}
             >
-              My toolkit includes Adobe Illustrator, Premiere Pro, Camtasia,
+              My toolkit includes Adobe Illustrator, Premiere Pro, Camtasia, 
               and a growing proficiency in AI development — all in service of
               making complex information more accessible and engaging.
             </p>

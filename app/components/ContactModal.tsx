@@ -68,7 +68,7 @@ export default function ContactModal() {
           (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#1A1010";
         }}
       >
-        ✉
+        🙋🏻‍♀️
       </button>
 
       {/* ── Modal ───────────────────────────────────────── */}
