@@ -83,7 +83,7 @@ function MascotMountain({ color }: { color: string }) {
 type CardDef = {
   title:      string;
   subtitle:   string;
-  
+  symbol?:    string;
   href:       string;
   accent:     string;
   bgA:        string;
