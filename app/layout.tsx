@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Analytics } from '@vercel/analytics/next';
 import CustomCursor from "./components/CustomCursor";
 import Navbar from "./components/Navbar";
 import ContactModal from "./components/ContactModal";
@@ -28,6 +29,7 @@ export default function RootLayout({
         <Navbar />
         <ContactModal />
         {children}
+        <Analytics />
       </body>
     </html>
   );
