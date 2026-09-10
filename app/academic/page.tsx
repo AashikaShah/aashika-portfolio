@@ -17,8 +17,8 @@ const coursework = [
 
 const questions = [
   "The gut-brain axis — I keep reading about it and the more I do, the less settled I think the science actually is.",
-  "How much does gut inflammation actually affect cognition? The data seems messier than the headlines suggest.",
-  "I'm genuinely unsure how the vagus nerve \"decides\" what to send upward. That question hasn't left me.",
+  "How much does gut inflammation actually affect cognition?",
+  "I'm genuinely unsure how the vagus nerve \"decides\" what to send upward.",
   "Microbiome research feels like it's moving faster than anyone can evaluate it carefully. I find that interesting, not discouraging.",
 ];
 
