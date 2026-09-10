@@ -1,5 +1,4 @@
 "use client";
-
 import { motion } from "framer-motion";
 import React from "react";
 
@@ -10,7 +9,7 @@ function FadeUp({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-8%" }}
-      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay }}
+      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay }}
     >
       {children}
     </motion.div>
@@ -36,7 +35,7 @@ function Blob({ top, left, right, bottom, size = 320 }: {
   );
 }
 
-/* ── PHOTO PLACEHOLDER ───────────────────────────────────── */
+/* ── PHOTO ───────────────────────────────────────────────── */
 function Photo({
   label,
   w = "100%",
@@ -56,32 +55,24 @@ function Photo({
 }) {
   if (isPolaroid) {
     return (
-      <div
-        style={{
-          transform: `rotate(${rotate}deg)`,
-          background: "#fff",
-          padding: "10px 10px 40px 10px",
-          boxShadow: "2px 4px 12px rgba(0,0,0,0.15)",
-          display: "inline-block",
-        }}
-      >
-        <div
-          style={{
-            width: w,
-            height: h,
-            background: accent + "33",
-            overflow: "hidden",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+      <div style={{
+        transform: `rotate(${rotate}deg)`,
+        background: "#fff",
+        padding: "10px 10px 40px 10px",
+        boxShadow: "2px 4px 12px rgba(0,0,0,0.15)",
+        display: "inline-block",
+      }}>
+        <div style={{
+          width: w,
+          height: h,
+          background: accent + "33",
+          overflow: "hidden",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
           {src ? (
-            <img
-              src={src}
-              alt={label}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
+            <img src={src} alt={label} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : (
             <span style={{ fontSize: 12, color: "#aaa" }}>{label}</span>
           )}
@@ -89,62 +80,20 @@ function Photo({
       </div>
     );
   }
-
   return (
-    <div
-      style={{
-        width: w,
-        height: h,
-        background: accent + "22",
-        borderRadius: 12,
-        overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        transform: `rotate(${rotate}deg)`,
-      }}
-    >
+    <div style={{
+      width: w, height: h,
+      background: accent + "22",
+      borderRadius: 12,
+      overflow: "hidden",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      transform: `rotate(${rotate}deg)`,
+    }}>
       {src ? (
-        <img
-          src={src}
-          alt={label}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
+        <img src={src} alt={label} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
       ) : (
         <span style={{ fontSize: 12, color: "#aaa" }}>{label}</span>
       )}
-    </div>
-  );
-}
-
-/* ── FILM STRIP ──────────────────────────────────────────── */
-function FilmStrip({ label }: { label: string }) {
-  const holes = Array.from({ length: 7 });
-  return (
-    <div style={{ background: "#2A1F30", borderRadius: 6, overflow: "hidden", width: "100%" }}>
-      <div style={{ display: "flex", justifyContent: "space-around", padding: "7px 4px" }}>
-        {holes.map((_, i) => (
-          <div key={i} style={{ width: 14, height: 10, background: "#4A3F55", borderRadius: 2 }} />
-        ))}
-      </div>
-      <div style={{
-        margin: "0 8px", height: 220,
-        background: "rgba(255,255,255,0.06)",
-        border: "1px dashed rgba(255,255,255,0.18)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-      }}>
-        <span style={{
-          color: "rgba(255,255,255,0.32)", fontSize: "0.58rem",
-          letterSpacing: "0.2em", textTransform: "uppercase",
-        }}>
-          {label}
-        </span>
-      </div>
-      <div style={{ display: "flex", justifyContent: "space-around", padding: "7px 4px" }}>
-        {holes.map((_, i) => (
-          <div key={i} style={{ width: 14, height: 10, background: "#4A3F55", borderRadius: 2 }} />
-        ))}
-      </div>
     </div>
   );
 }
@@ -196,9 +145,36 @@ function WorkCard({ title, subtitle, symbol, topColor, rotate = 0 }: {
 }
 
 /* ══════════════════════════════════════════════════════════
+   ✏️  ACKNOWLEDGEMENTS PHOTOS — EDIT ONLY THIS SECTION
+   ══════════════════════════════════════════════════════════
+   To add a photo:
+   1. Drop your image into /public/images/bold/
+   2. Replace the src="" with your filename below
+   ══════════════════════════════════════════════════════════ */
+const ACKNOWLEDGEMENT_PHOTOS = {
+  mentor1: {
+    name: "Prof. Te-Wen Lo",
+    src: "/images/bold/te-wen.jpg",   // ← change filename here
+    rotate: -2,
+    accent: "#D4A8B8",
+  },
+  mentor2: {
+    name: "Elizabeth Reilly",
+    src: "",                           // ← add filename here e.g. "/images/bold/elizabethreilly.jpg"
+    rotate: 2,
+    accent: "#A8C4D4",
+  },
+  thankful1: {
+    name: "Mish Lenhart",
+    src: "",                           // ← add filename here e.g. "/images/bold/mishlenhart.jpg"
+    rotate: -1.5,
+    accent: "#C4D4A8",
+  },
+};
+
+/* ══════════════════════════════════════════════════════════
    PAGE
    ══════════════════════════════════════════════════════════ */
-
 export default function BoldPage() {
   return (
     <main style={{ backgroundColor: "#F7F3FA", color: "#1A1A2A", overflowX: "hidden" }}>
@@ -213,11 +189,10 @@ export default function BoldPage() {
       }}>
         <Blob top="-80px" left="-100px" size={380} />
         <Blob bottom="-60px" right="-80px" size={300} />
-
         <motion.div
           initial={{ opacity: 0, y: 32 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
           style={{ position: "relative", zIndex: 1 }}
         >
           <p style={{
@@ -225,7 +200,7 @@ export default function BoldPage() {
             fontSize: "0.58rem", letterSpacing: "0.5em",
             textTransform: "uppercase", color: "#A87EC8", marginBottom: "1rem",
           }}>
-            BOLD Women's Leadership Network · Ithaca College
+            BOLD Women&apos;s Leadership Network · Ithaca College
           </p>
           <h1 style={{
             fontFamily: "var(--font-cormorant), Georgia, serif",
@@ -258,7 +233,7 @@ export default function BoldPage() {
               fontSize: "clamp(1.2rem, 2vw, 1.65rem)", lineHeight: 1.8,
               color: "rgba(26,26,42,0.88)",
             }}>
-              Being part of the Bold Women's Leadership Network has been a transformative experience
+              Being part of the Bold Women&apos;s Leadership Network has been a transformative experience
               in my academic and personal journey. With aspirations in biology, neuroscience, and
               nutrition, I sought out this program to grow as a leader, gain confidence in my voice,
               and surround myself with a community of women who inspire and challenge me. This
@@ -275,10 +250,7 @@ export default function BoldPage() {
         position: "relative", overflow: "hidden",
       }}>
         <Blob top="-40px" left="-60px" size={300} />
-
         <div className="max-w-[1060px] mx-auto" style={{ position: "relative", zIndex: 1 }}>
-
-          {/* Section label */}
           <FadeUp>
             <p style={{
               fontFamily: "var(--font-inter), system-ui, sans-serif",
@@ -289,12 +261,10 @@ export default function BoldPage() {
               Year 1 Reflection
             </p>
           </FadeUp>
-
           <div className="reflection-grid" style={{
             display: "grid", gridTemplateColumns: "1.5fr 1fr",
             gap: "3rem", alignItems: "start", marginTop: "0.5rem",
           }}>
-
             {/* LEFT — text */}
             <FadeUp>
               <h2 style={{
@@ -305,64 +275,54 @@ export default function BoldPage() {
               }}>
                 Showing up, learning to lead,<br />and finding my voice.
               </h2>
-
               <p style={{
                 fontFamily: "var(--font-inter), system-ui, sans-serif",
                 fontSize: "0.93rem", lineHeight: 1.82,
                 color: "rgba(26,26,42,0.72)", marginBottom: "1.2rem",
               }}>
                 The Friday workshops reshaped how I think about leadership. Weekly workshops focused on
-                learning topitch with purpose, navigate difficult conversations, and lead with
-                intention gave me language for things I had felt but couldn't articulate.
+                learning to pitch with purpose, navigate difficult conversations, and lead with
+                intention gave me language for things I had felt but couldn&apos;t articulate.
                 Each session pushed me to be more deliberate — about how I show up,
                 how I communicate, and what kind of leader I want to become.
               </p>
-
-              {/* Pull quote */}
-              <div style={{
-                borderLeft: "3px solid #C4B8D8",
-                paddingLeft: "1.1rem",
-                margin: "1.4rem 0",
-              }}>
+              <div style={{ borderLeft: "3px solid #C4B8D8", paddingLeft: "1.1rem", margin: "1.4rem 0" }}>
                 <p style={{
                   fontFamily: "var(--font-cormorant), Georgia, serif",
                   fontSize: "clamp(1.1rem, 1.8vw, 1.35rem)",
-                  fontStyle: "italic", lineHeight: 1.65,
-                  color: "#A87EC8",
+                  fontStyle: "italic", lineHeight: 1.65, color: "#A87EC8",
                 }}>
-                  "you don't need all the answers right now — just focus on
-                  doing your best where you are."
+                  &quot;you don&apos;t need all the answers right now — just focus on
+                  doing your best where you are.&quot;
                 </p>
               </div>
-
               <p style={{
                 fontFamily: "var(--font-inter), system-ui, sans-serif",
                 fontSize: "0.93rem", lineHeight: 1.82,
                 color: "rgba(26,26,42,0.72)",
               }}>
-                This year, I put those lessons into practice by stepping into new roles as a researcher, collaborator, and scholar. Each experience challenged me in different ways and pushed me to grow beyond what I thought I was capable of.
+                This year, I put those lessons into practice by stepping into new roles as a researcher,
+                collaborator, and scholar. Each experience challenged me in different ways and pushed me
+                to grow beyond what I thought I was capable of.
               </p>
             </FadeUp>
 
-            {/* RIGHT — photo column
+            {/* RIGHT — photos
                 ═══════════════════════════════════════════════
-                ADD PHOTOS: add a new line to the array below.
-                  src  – path under /public, e.g. "/images/bold/event.jpg"
-                  rotate – tilt in degrees, e.g. -1.5, 1.2, 0
-                Leave src as "" to keep a dashed placeholder slot.
-                Photos display at their natural size — no cropping.
-                Add as many entries as you like.
+                ADD PHOTOS: add a new { rotate, src } line below.
+                  src    – path under /public e.g. "/images/bold/event.jpg"
+                  rotate – tilt in degrees e.g. -1.5, 1.2, 0
+                Leave src as "" to keep a dashed placeholder.
                 ═══════════════════════════════════════════════ */}
             <FadeUp delay={0.1}>
               <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
                 {(
                   [
                     { rotate: -1.5, src: "/images/bold/bold-cohort2027.jpeg" },
-                    { rotate:  1.2, src: "/images/bold/nin.jpg" }
-                    
+                    { rotate:  1.2, src: "/images/bold/nin.jpg" },
                     /* ← add more lines here, e.g.:
-                    { rotate:  1.0, src: "/images/bold/photo4.jpg" },
-                    { rotate: -1.2, src: "/images/bold/photo5.jpg" },
+                    { rotate:  1.0, src: "/images/bold/photo3.jpg" },
+                    { rotate: -1.2, src: "/images/bold/photo4.jpg" },
                     */
                   ] as { rotate: number; src: string }[]
                 ).map((p, i) => (
@@ -373,7 +333,7 @@ export default function BoldPage() {
                     viewport={{ once: true, margin: "-5%" }}
                     transition={{
                       duration: 0.7,
-                      ease: [0.22, 1, 0.36, 1],
+                      ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
                       delay: (i % 3) * 0.08,
                     }}
                     style={{
@@ -384,19 +344,12 @@ export default function BoldPage() {
                     }}
                   >
                     {p.src ? (
-                      /* Real photo — natural size, no cropping */
                       <img
                         src={p.src}
                         alt={`Reflection photo ${i + 1}`}
-                        style={{
-                          display: "block",
-                          width: "100%",
-                          height: "auto",
-                          borderRadius: 10,
-                        }}
+                        style={{ display: "block", width: "100%", height: "auto", borderRadius: 10 }}
                       />
                     ) : (
-                      /* Placeholder — remove once src is set */
                       <div style={{
                         height: 160,
                         border: "1px dashed rgba(26,26,42,0.15)",
@@ -414,57 +367,26 @@ export default function BoldPage() {
                 ))}
               </div>
             </FadeUp>
-
           </div>
         </div>
       </section>
 
-      {/* ── 4. THANK YOU ────────────────────────────────── */}
-      {/*
-        ═══════════════════════════════════════════════════
-        HOW TO ADD PHOTOS
-        ═══════════════════════════════════════════════════
-
-        POLAROID photos (mentor cards):
-          Find the <Photo ... isPolaroid /> components below.
-          Add  src="/images/bold/filename.jpg"  to any of them.
-          Example:
-            <Photo
-              label="Prof. Te-Wen Lo"
-              src="/images/bold/tewenlo.jpg"   ← add this line
-              w={160} h={200} rotate={-2} accent="#D4A8B8" isPolaroid
-            />
-          → Place your image files in /public/images/bold/
-
-        PLAIN photo placeholders (reflection section above):
-          Those use inline <div> boxes — to swap in a real image,
-          replace the <div style={{ height: p.h, border: "1px dashed..." }}>
-          block with:
-            <img
-              src="/images/bold/yourfile.jpg"
-              alt="description"
-              style={{ width:"100%", height: p.h, objectFit:"cover", borderRadius:10 }}
-            />
-        ═══════════════════════════════════════════════════
-      */}
+      {/* ── 4. ACKNOWLEDGEMENTS ──────────────────────────── */}
       <section style={{
         padding: "5rem 2rem 7rem", background: "#EDE8F5",
         position: "relative", overflow: "hidden",
       }}>
         <Blob top="-40px" left="-60px" size={260} />
         <Blob bottom="-40px" right="-60px" size={220} />
-
         <div className="max-w-[860px] mx-auto" style={{
           position: "relative", zIndex: 1, textAlign: "center",
         }}>
-
-          {/* Label */}
+          {/* Label + heading */}
           <FadeUp>
             <p style={{
               fontFamily: "var(--font-inter), system-ui, sans-serif",
               fontSize: "0.58rem", letterSpacing: "0.46em",
-              textTransform: "uppercase", color: "#A87EC8",
-              marginBottom: "0.75rem",
+              textTransform: "uppercase", color: "#A87EC8", marginBottom: "0.75rem",
             }}>
               Acknowledgements
             </p>
@@ -478,7 +400,7 @@ export default function BoldPage() {
             </h2>
           </FadeUp>
 
-          {/* Mentor + sponsor polaroids */}
+          {/* ── Mentor & Sponsor ── */}
           <FadeUp delay={0.06}>
             <p style={{
               fontFamily: "var(--font-inter), system-ui, sans-serif",
@@ -492,26 +414,43 @@ export default function BoldPage() {
               display: "flex", justifyContent: "center",
               gap: "3rem", flexWrap: "wrap", marginBottom: "1rem",
             }}>
-              {[
-                { name: "Prof. Te-Wen Lo",   rotate: -2,  accent: "#D4A8B8" },
-                { name: "Elizabeth Reilly",  rotate:  2,  accent: "#A8C4D4" },
-              ].map((m) => (
-                <div key={m.name} style={{ textAlign: "center" }}>
-                  {/* ← add src="/images/bold/yourfile.jpg" below to show a real photo */}
-                  <Photo
-                    label={m.name} w={160} h={200}
-                    rotate={m.rotate} accent={m.accent}
-                    src="/images/bold/te-wen.jpg"  isPolaroid
-                  />
-                  <p style={{
-                    fontFamily: "var(--font-cormorant), Georgia, serif",
-                    fontStyle: "italic", fontSize: "1.05rem",
-                    color: "#1A1A2A", marginTop: "0.6rem",
-                  }}>
-                    {m.name}
-                  </p>
-                </div>
-              ))}
+              {/* Mentor 1 — edit src in ACKNOWLEDGEMENT_PHOTOS above */}
+              <div style={{ textAlign: "center" }}>
+                <Photo
+                  label={ACKNOWLEDGEMENT_PHOTOS.mentor1.name}
+                  w={160} h={200}
+                  rotate={ACKNOWLEDGEMENT_PHOTOS.mentor1.rotate}
+                  accent={ACKNOWLEDGEMENT_PHOTOS.mentor1.accent}
+                  src={ACKNOWLEDGEMENT_PHOTOS.mentor1.src}
+                  isPolaroid
+                />
+                <p style={{
+                  fontFamily: "var(--font-cormorant), Georgia, serif",
+                  fontStyle: "italic", fontSize: "1.05rem",
+                  color: "#1A1A2A", marginTop: "0.6rem",
+                }}>
+                  {ACKNOWLEDGEMENT_PHOTOS.mentor1.name}
+                </p>
+              </div>
+
+              {/* Mentor 2 — edit src in ACKNOWLEDGEMENT_PHOTOS above */}
+              <div style={{ textAlign: "center" }}>
+                <Photo
+                  label={ACKNOWLEDGEMENT_PHOTOS.mentor2.name}
+                  w={160} h={200}
+                  rotate={ACKNOWLEDGEMENT_PHOTOS.mentor2.rotate}
+                  accent={ACKNOWLEDGEMENT_PHOTOS.mentor2.accent}
+                  src={ACKNOWLEDGEMENT_PHOTOS.mentor2.src}
+                  isPolaroid
+                />
+                <p style={{
+                  fontFamily: "var(--font-cormorant), Georgia, serif",
+                  fontStyle: "italic", fontSize: "1.05rem",
+                  color: "#1A1A2A", marginTop: "0.6rem",
+                }}>
+                  {ACKNOWLEDGEMENT_PHOTOS.mentor2.name}
+                </p>
+              </div>
             </div>
           </FadeUp>
 
@@ -524,7 +463,7 @@ export default function BoldPage() {
             }} />
           </FadeUp>
 
-          {/* Also thankful row */}
+          {/* ── Also thankful ── */}
           <FadeUp delay={0.14}>
             <p style={{
               fontFamily: "var(--font-inter), system-ui, sans-serif",
@@ -539,18 +478,22 @@ export default function BoldPage() {
               gap: "3rem", flexWrap: "wrap",
               alignItems: "flex-end", marginBottom: "2rem",
             }}>
-              {/* ← add src="/images/bold/mishlenhart.jpg" below */}
+              {/* Thankful 1 — edit src in ACKNOWLEDGEMENT_PHOTOS above */}
               <div style={{ textAlign: "center" }}>
                 <Photo
-                  label="Mish Lenhart" w={160} h={200}
-                  rotate={-1.5} accent="#C4D4A8" isPolaroid
+                  label={ACKNOWLEDGEMENT_PHOTOS.thankful1.name}
+                  w={160} h={200}
+                  rotate={ACKNOWLEDGEMENT_PHOTOS.thankful1.rotate}
+                  accent={ACKNOWLEDGEMENT_PHOTOS.thankful1.accent}
+                  src={ACKNOWLEDGEMENT_PHOTOS.thankful1.src}
+                  isPolaroid
                 />
                 <p style={{
                   fontFamily: "var(--font-cormorant), Georgia, serif",
                   fontStyle: "italic", fontSize: "1.05rem",
                   color: "#1A1A2A", marginTop: "0.6rem",
                 }}>
-                  Mish Lenhart
+                  {ACKNOWLEDGEMENT_PHOTOS.thankful1.name}
                 </p>
               </div>
 
@@ -575,13 +518,13 @@ export default function BoldPage() {
                   textTransform: "uppercase", color: "rgba(255,255,255,0.75)",
                   textAlign: "center", lineHeight: 1.5,
                 }}>
-                  Women's<br />Leadership Network
+                  Women&apos;s<br />Leadership Network
                 </p>
               </div>
             </div>
           </FadeUp>
 
-          {/* Closing line */}
+          {/* Closing */}
           <FadeUp delay={0.18}>
             <p style={{
               fontFamily: "var(--font-cormorant), Georgia, serif",
@@ -589,10 +532,8 @@ export default function BoldPage() {
               color: "rgba(26,26,42,0.55)", fontStyle: "italic",
               marginBottom: "3rem",
             }}>
-              & everybody involved in the program!
+              &amp; everybody involved in the program!
             </p>
-
-            {/* Final stamp */}
             <p style={{
               fontFamily: "var(--font-inter), system-ui, sans-serif",
               fontSize: "0.56rem", letterSpacing: "0.38em",
@@ -601,7 +542,6 @@ export default function BoldPage() {
               Aashika Shah · BOLD Leadership Scholar · Year 1
             </p>
           </FadeUp>
-
         </div>
       </section>
 
