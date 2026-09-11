@@ -1,9 +1,10 @@
 import "./globals.css";
 import { Cormorant_Garamond, Inter } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
+
 import CustomCursor from "./components/CustomCursor";
 import Navbar from "./components/Navbar";
 import ContactModal from "./components/ContactModal";
-
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -22,13 +23,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
+    <html
+      lang="en"
+      className={`${cormorant.variable} ${inter.variable}`}
+    >
       <body>
         <CustomCursor />
         <Navbar />
         <ContactModal />
         {children}
       </body>
+
+      <GoogleAnalytics
+        gaId={process.env.NEXT_PUBLIC_GA_ID!}
+      />
     </html>
   );
 }
